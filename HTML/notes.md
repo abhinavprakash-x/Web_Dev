@@ -334,6 +334,9 @@ table
 tr
 th
 td
+border
+rowspan
+colspan
 ```
 
 ---
