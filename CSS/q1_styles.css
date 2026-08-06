@@ -1,0 +1,46 @@
+* {
+    margin: 0px;
+}
+
+.flag{
+    background-color: white;
+    height: 200px;
+    width: 300px;
+    margin: 20px;
+    display: inline-block;
+    margin-top: 50px;
+}
+
+.nav{
+    position: fixed;
+    background-color: beige;
+    height: 30px;
+    width: 100vw;
+    align-content: center;
+}
+
+.box{
+    height: 1000px;
+    width: 600px;
+    background-color: lightpink;
+    margin-left: 20px;
+}
+
+.tab {
+    height: 20px;
+    width: 80px;
+    display: inline-block;
+    background-color: lawngreen;
+    margin-top: 10px;
+    margin-left: 10px;
+    text-align: center;
+    position: sticky;
+    top: 30px;
+}
+
+#mtitle {
+    color: black;
+    font-weight: bold;
+    text-decoration: underline;
+    text-align: center;
+}
