@@ -44,3 +44,55 @@
     text-decoration: underline;
     text-align: center;
 }
+
+#orange {
+    background-color: orange;
+    height: 67px;
+}
+
+#white {
+    background-color: white;
+    height: 67px;
+}
+
+#green {
+    background-color: green;
+    height: 67px;
+}
+
+.red {
+    background-color: red;
+    height: 50px;
+}
+
+.blue {
+    background-color: blue;
+    height: 100px;
+}
+
+#jred {
+    background-color: red;
+    height: 100px;
+    width: 100px;
+    margin-left: 100px;
+    margin-top: 50px;
+    border-radius: 50%;
+}
+
+#lwhite {
+    background-color: white;
+    height: 80px;
+    width: 80px;
+    margin-left: 110px;
+    position: relative;
+    top: 10px;
+    border-radius: 50%;
+}
+
+#iblue {
+    background-color: blue;
+    height: 67px;
+    width: 67px;
+    margin-left: 120px;
+    border-radius: 50%;
+}
