@@ -1,0 +1,21 @@
+* {
+    box-sizing: border-box;
+}
+
+.container {
+    display: grid;
+    grid-template-rows: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    padding: 5px;
+    height: 600px;
+    width: 600px;
+    background-color: green;
+}
+
+.white {
+    background-color: white;
+}
+
+.black {
+    background-color: black;
+}

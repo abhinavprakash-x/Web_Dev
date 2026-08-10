@@ -22,3 +22,13 @@ flex-basis: 100px --> increase length across main axis
 align-self: flex-start; current item gets out of parent alignment and goes to top (or wherever specified) of flex
 
 Flexbox is 1 dimensional layout (works around one axis)
+
+
+Grids: 2D Flexbox: 1D
+Parent container: Grid rows columns
+Child items: Grid-items
+
+parent --> display: grid;
+           grid-template-rows: 200px 200px;
+           grid-template-columns: 200px 200px;
+items can "overflow" out of grid to prevent it use grid-template-rows/coluns to be 1fr (fraction)
