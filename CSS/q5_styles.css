@@ -1,0 +1,56 @@
+* {
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
+
+.container {
+    background-color: beige;
+    height: 100vh;
+    width: 100vw;
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+.product {
+    background-color: orange;
+    height: 300px;
+    width: 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-radius: 10px;
+}
+
+@media screen and (max-width: 700px) {
+    .container {
+        flex-direction: column;
+        gap: 10px;
+        overflow: scroll;
+    }
+    .product {
+        height: 200px;
+        width: 150px;
+    }
+}
+
+img {
+    margin: 10px;
+    height: 75%;
+    width: 75%;
+    background-color: black;
+}
+
+h2 {
+    text-align: center;
+}
+
+input[type="button"] {
+    margin-top: 5px;
+    background-color: rgb(49, 107, 231);
+    color: white;
+    width: 60px;
+    cursor: pointer;
+}
