@@ -1,0 +1,44 @@
+* {
+    padding: 0;
+    margin: 0;
+    text-align: center;
+    font-weight: bold;
+    font-size: 25px;
+    box-sizing: border-box;
+}
+
+.container {
+    display: grid;
+    grid-template-rows: 1fr 5fr 5fr 5fr 2fr;
+    grid-template-columns: 1fr 2fr 2fr;
+    background-color: black;
+    gap: 5px;
+}
+
+.header {
+    background-color: orange;
+    grid-column: 1/4;
+}
+
+.sidebar {
+    background-color: crimson;
+    grid-row: 2/5;
+}
+
+.main {
+    background-color: aquamarine;
+    grid-column: 2/4;
+}
+
+.card {
+    background-color: gold;
+}
+
+.long {
+    grid-column: 2/4;
+}
+
+.footer {
+    background-color: gray;
+    grid-column: 1/4;
+}
