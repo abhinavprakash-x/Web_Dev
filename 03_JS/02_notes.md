@@ -1,6 +1,11 @@
 # JavaScript Notes — Part 2
 
-# Video 5: JS Numbers and `Math` Object
+> **Topics:** Numbers & `Math` • Strings • Dates • Arrays • Objects  
+> **Goal:** Understand JavaScript's core data types and the operations you'll use constantly when working with real data.
+
+---
+
+# 1. Numbers and the `Math` Object
 
 ## Number Methods
 
@@ -13,13 +18,19 @@ num.toFixed(n)
 Returns a **string** containing the number rounded to `n` digits after the decimal point.
 
 ```js
-let num = 34.26785;
+const num = 34.26785;
 
 console.log(num.toFixed(1)); // "34.3"
 console.log(num.toFixed(3)); // "34.268"
 ```
 
-> `toFixed()` returns a **string**, not a number.
+> **Important:** `toFixed()` returns a string, not a number.
+
+If you need a number afterward:
+
+```js
+const rounded = Number(num.toFixed(2));
+```
 
 ---
 
@@ -29,21 +40,21 @@ console.log(num.toFixed(3)); // "34.268"
 num.toPrecision(n)
 ```
 
-Returns a **string** representing the number with approximately `n` significant digits.
+Returns a string representing the number with `n` significant digits.
 
 ```js
-let num = 34.26785;
+const num = 34.26785;
 
 console.log(num.toPrecision(2)); // "34"
 console.log(num.toPrecision(4)); // "34.27"
 ```
 
-The important difference is:
+### `toFixed()` vs `toPrecision()`
 
-```text
-`toFixed(n)`     → n digits after the decimal point
-`toPrecision(n)` → n significant digits
-```
+| Method | Controls |
+|---|---|
+| `toFixed(n)` | `n` digits after the decimal point |
+| `toPrecision(n)` | `n` significant digits |
 
 ---
 
@@ -56,74 +67,80 @@ num.toString()
 Converts a value to a string.
 
 ```js
-let num = 123;
+const num = 123;
 
-console.log(num.toString());
+console.log(num.toString());        // "123"
 console.log(typeof num.toString()); // "string"
 ```
 
 ---
 
-# `new` and Number Objects
+# 2. Primitive Numbers vs Number Objects
 
 Using `new Number(...)` creates a **Number object**, not a primitive number.
 
 ```js
-let n = new Number(12);
+const n = new Number(12);
 
 console.log(typeof n); // "object"
 ```
 
-Normally, use a number literal instead:
+Normally, use a number literal:
 
 ```js
-let n = 12;
+const n = 12;
 ```
 
-> `new Number(12)` is generally not needed in normal JavaScript code.
+> `new Number(...)` is generally unnecessary in normal JavaScript code.
 
 ---
 
-# Comparing Primitive and Non-Primitive Values
+# 3. Comparing Values and References
 
-Primitive values are compared by their values.
-
-Objects are compared by **reference identity**.
+Primitive values such as numbers are compared by their values:
 
 ```js
-let a = 10;
-let b = 10;
+const a = 10;
+const b = 10;
 
 console.log(a === b); // true
 ```
 
-But:
+Objects are compared by **reference identity**:
 
 ```js
-let obj1 = { value: 10 };
-let obj2 = { value: 10 };
+const obj1 = { value: 10 };
+const obj2 = { value: 10 };
 
 console.log(obj1 === obj2); // false
 ```
 
-Even though both objects contain the same data, they are two different objects.
+Although they contain the same data, they are two different objects.
 
 If two variables refer to the same object:
 
 ```js
-let obj1 = { value: 10 };
-let obj2 = obj1;
+const obj1 = { value: 10 };
+const obj2 = obj1;
 
 console.log(obj1 === obj2); // true
 ```
 
+Think of it as:
+
+```text
+obj1 ─────┐
+          ├──→ { value: 10 }
+obj2 ─────┘
+```
+
 ---
 
-# `Math` Object
+# 4. The `Math` Object
 
-`Math` is a built-in object containing mathematical constants and functions.
+`Math` is a built-in object that provides mathematical constants and functions.
 
-## Common methods and constants
+## Common methods
 
 ```js
 Math.abs(-4);      // 4
@@ -134,8 +151,10 @@ Math.max(1, 2, 3);  // 3
 Math.min(1, 2, 3);  // 1
 Math.pow(2, 3);    // 8
 Math.sqrt(16);     // 4
-Math.PI;           // approximately 3.14159...
+Math.PI;           // approximately 3.14159
 ```
+
+> `Math` is an object containing static methods and constants. You don't create a `Math` instance.
 
 ---
 
@@ -148,12 +167,10 @@ Math.random()
 Returns a pseudo-random number in the range:
 
 ```text
-0 <= random number < 1
+0 <= value < 1
 ```
 
-So `1` is **not** included.
-
-Example:
+`1` is **never included**.
 
 ```js
 console.log(Math.random());
@@ -163,7 +180,7 @@ console.log(Math.random());
 
 ## Random Integer in a Range
 
-To generate a random integer from `min` to `max`, **including both endpoints**:
+To generate an integer from `min` to `max`, **including both endpoints**:
 
 ```js
 Math.floor(Math.random() * (max - min + 1)) + min
@@ -172,32 +189,39 @@ Math.floor(Math.random() * (max - min + 1)) + min
 Example:
 
 ```js
-let min = 15;
-let max = 25;
+const min = 15;
+const max = 25;
 
-let randomNumber = Math.floor(
-    Math.random() * (max - min + 1)
-) + min;
+const randomNumber =
+    Math.floor(Math.random() * (max - min + 1)) + min;
 
 console.log(randomNumber);
 ```
 
 This produces an integer from **15 through 25**.
 
+A useful reusable version:
+
+```js
+function randomInt(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+console.log(randomInt(1, 6)); // 1–6
+```
+
 ---
 
-# Video 6: JS Strings and Dates
-
-# Strings
+# 5. Strings
 
 A string represents text.
 
-JavaScript supports several ways to create strings:
+JavaScript supports:
 
 ```js
-let str1 = "Hello";
-let str2 = 'World';
-let str3 = `Hello World`;
+const str1 = "Hello";
+const str2 = 'World';
+const str3 = `Hello World`;
 ```
 
 The backtick form is called a **template literal**.
@@ -209,11 +233,11 @@ The backtick form is called a **template literal**.
 Template literals can span multiple lines:
 
 ```js
-let str = `Hello
+const str = `Hello
 World`;
 ```
 
-Regular single-quoted and double-quoted strings cannot contain an unescaped literal newline in the same way.
+Single-quoted and double-quoted strings require escape sequences for literal line breaks.
 
 ---
 
@@ -228,27 +252,34 @@ ${expression}
 Example:
 
 ```js
-let num = 10;
-let str = `The number is ${num}`;
+const num = 10;
+const str = `The number is ${num}`;
 
 console.log(str);
 ```
 
-This is similar to formatted string output in other languages.
+Expressions can be more complex:
+
+```js
+const a = 10;
+const b = 20;
+
+console.log(`Sum = ${a + b}`);
+```
 
 ---
 
-# Common String Properties and Methods
+# 6. String Properties and Methods
 
 ## `length`
 
 ```js
-let str = "Hello";
+const str = "Hello";
 
 console.log(str.length); // 5
 ```
 
-Returns the number of UTF-16 code units in the string.
+> `length` counts UTF-16 code units, so it does not always equal the number of user-perceived characters.
 
 ---
 
@@ -261,13 +292,24 @@ str.toLowerCase();
 
 These return **new strings** because strings are immutable.
 
+```js
+const str = "Hello";
+
+const upper = str.toUpperCase();
+
+console.log(str);   // "Hello"
+console.log(upper); // "HELLO"
+```
+
 ---
 
 ## Accessing Characters
 
 ```js
-str.charAt(1);
-str[3];
+const str = "Hello";
+
+console.log(str.charAt(1)); // "e"
+console.log(str[3]);        // "l"
 ```
 
 Indexes start at `0`.
@@ -284,6 +326,15 @@ str.startsWith("He");
 str.endsWith("lo");
 ```
 
+Example:
+
+```js
+const str = "JavaScript";
+
+console.log(str.includes("Script")); // true
+console.log(str.indexOf("a"));       // 1
+```
+
 ---
 
 ## Extracting Parts of a String
@@ -295,11 +346,21 @@ str.substring(start, end);
 
 The `end` index is not included.
 
+```js
+const str = "JavaScript";
+
+console.log(str.slice(0, 4)); // "Java"
+```
+
 `slice()` also supports negative indexes:
 
 ```js
-str.slice(-3);
+console.log(str.slice(-6)); // "Script"
 ```
+
+### `slice()` vs `substring()`
+
+For everyday code, prefer `slice()` when you need negative indexes or want behavior that is easier to reason about.
 
 ---
 
@@ -308,16 +369,23 @@ str.slice(-3);
 Using `+`:
 
 ```js
-let str = str1 + " " + str2;
+const first = "Hello";
+const second = "World";
+
+const result = first + " " + second;
 ```
 
-Or using `concat()`:
+Or:
 
 ```js
-let str = str1.concat(" ", str2);
+const result = first.concat(" ", second);
 ```
 
-Template literals are often more convenient for combining values with text.
+Template literals are often the cleanest option:
+
+```js
+const result = `${first} ${second}`;
+```
 
 ---
 
@@ -326,15 +394,17 @@ Template literals are often more convenient for combining values with text.
 Splits a string into an array.
 
 ```js
-let str = "Abhinav,AA,BB,CC";
+const str = "Abhinav,AA,BB,CC";
 
 console.log(str.split(","));
+// ["Abhinav", "AA", "BB", "CC"]
 ```
 
-Result:
+You can also split every character:
 
-```text
-["Abhinav", "AA", "BB", "CC"]
+```js
+console.log("hello".split(""));
+// ["h", "e", "l", "l", "o"]
 ```
 
 ---
@@ -345,13 +415,13 @@ Result:
 str.replace("Abhinav", "John");
 ```
 
-Replaces the first matching occurrence for a string search.
+For a string search, `replace()` replaces the first matching occurrence.
 
 ```js
 str.replaceAll("A", "o");
 ```
 
-Replaces all matching occurrences.
+`replaceAll()` replaces all matching occurrences.
 
 Both return a **new string**.
 
@@ -365,41 +435,46 @@ str.trimStart();
 str.trimEnd();
 ```
 
-These return strings with whitespace removed from both ends, the beginning, or the end respectively.
+Example:
+
+```js
+const input = "   hello   ";
+
+console.log(input.trim()); // "hello"
+```
+
+These return new strings.
 
 ---
 
-# Date Object
+# 7. Date and Time
 
-JavaScript provides the `Date` object for working with dates and times.
+JavaScript provides the `Date` object for representing a specific point in time.
 
 ## Current Date and Time
 
 ```js
-let time = new Date();
+const now = new Date();
+
+console.log(now);
+console.log(now.toString());
 ```
 
-A `Date` object represents a specific point in time.
-
-To display it using the local time-zone representation:
-
-```js
-console.log(time.toString());
-```
+`Date` uses the host environment's current time information.
 
 ---
 
 ## Getting Date and Time Components
 
 ```js
-time.getFullYear();
-time.getMonth();
-time.getDate();
-time.getDay();
+now.getFullYear();
+now.getMonth();
+now.getDate();
+now.getDay();
 
-time.getHours();
-time.getMinutes();
-time.getSeconds();
+now.getHours();
+now.getMinutes();
+now.getSeconds();
 ```
 
 Important:
@@ -410,23 +485,25 @@ getDate()  → day of the month, 1 to 31
 getDay()   → day of the week, 0 to 6
 ```
 
-For example:
+So:
 
 ```js
-console.log(time.getMonth() + 1);
+console.log(now.getMonth() + 1);
 ```
 
 is commonly used when you want a human-readable month number from `1` to `12`.
+
+> `getDay()` is **not** the day of the month. It represents the weekday: Sunday = `0`, Monday = `1`, ..., Saturday = `6`.
 
 ---
 
 ## Creating a Custom Date
 
 ```js
-let date = new Date(2020, 11, 25, 10, 30, 0);
+const date = new Date(2020, 11, 25, 10, 30, 0);
 ```
 
-The numeric constructor uses local time and the month is **zero-indexed**:
+The numeric constructor uses **local time**, and the month is zero-indexed:
 
 ```text
 January  → 0
@@ -435,13 +512,13 @@ February → 1
 December → 11
 ```
 
-So `11` means December.
+Therefore, `11` means December.
 
 ---
 
-# Timestamp
+# 8. Timestamps
 
-JavaScript represents a `Date` internally as a number of milliseconds relative to the Unix epoch:
+JavaScript represents a `Date` as a number of milliseconds relative to:
 
 ```text
 1 January 1970, 00:00:00 UTC
@@ -450,28 +527,41 @@ JavaScript represents a `Date` internally as a number of milliseconds relative t
 `Date.now()` returns the current timestamp in milliseconds.
 
 ```js
-let timestamp = Date.now();
+const timestamp = Date.now();
+
 console.log(timestamp);
 ```
 
-You can also create a `Date` from a timestamp:
+You can create a `Date` from a timestamp:
 
 ```js
-let date = new Date(timestamp);
+const date = new Date(timestamp);
 ```
 
-> A timestamp is not specifically an API call to the OS. The JavaScript runtime obtains the current time from its host environment and exposes it through the `Date` APIs.
+> A timestamp is not itself an OS API call. The JavaScript runtime obtains current time information from its host environment and exposes it through the `Date` APIs.
+
+### ISO strings
+
+For data exchange, ISO 8601 strings are commonly used:
+
+```js
+const date = new Date("2026-09-06T10:30:00Z");
+
+console.log(date.toISOString());
+```
+
+> When parsing dates from external data, prefer well-defined formats such as ISO 8601 rather than ambiguous date strings.
 
 ---
 
-# Video 7: JS Arrays
+# 9. Arrays
 
 ## What is an Array?
 
 An array is an **ordered collection of values**.
 
 ```js
-let arr = [10, 20, 30, 40];
+const arr = [10, 20, 30, 40];
 ```
 
 Array indexes start at `0`:
@@ -501,7 +591,7 @@ arr[1] = 99;
 JavaScript arrays can contain values of different types:
 
 ```js
-let arr = [10, "Hello", true, null, [1, 2]];
+const mixed = [10, "Hello", true, null, [1, 2]];
 ```
 
 They can also contain objects, functions, or other arrays.
@@ -511,45 +601,45 @@ They can also contain objects, functions, or other arrays.
 ## Arrays Are Objects
 
 ```js
-typeof [];
-// "object"
+console.log(typeof []); // "object"
 ```
 
 Arrays are specialized objects with array-specific behavior.
 
-Their indexes behave like property keys, while the array also maintains a `length` property.
+They have numeric indexes and a `length` property, but JavaScript does **not** guarantee that an array is implemented as a traditional contiguous-memory array.
+
+> Focus on observable behavior rather than assuming a particular engine's internal memory layout.
 
 ---
 
 ## `length`
 
 ```js
-let arr = [10, 20, 30];
+const arr = [10, 20, 30];
 
 console.log(arr.length); // 3
 ```
 
-`length` is one greater than the highest occupied array index in the usual dense-array case, and assigning beyond the current end can increase it.
-
-Example:
+The `length` property is based on the highest array index plus one.
 
 ```js
 arr[5] = 100;
+
 console.log(arr.length); // 6
 ```
 
-This also leaves empty slots between indexes `3` and `5`.
+This creates empty slots between indexes `3` and `5`.
 
 ---
 
-# Adding and Removing Elements
+# 10. Adding and Removing Elements
 
 ## `push()`
 
-Adds one or more elements to the **end** of the array.
+Adds one or more elements to the **end**.
 
 ```js
-let arr = [1, 2, 3];
+const arr = [1, 2, 3];
 
 arr.push(4);
 
@@ -562,12 +652,12 @@ Returns the new array length.
 
 ## `pop()`
 
-Removes the last element.
+Removes the last element and returns it.
 
 ```js
-let arr = [1, 2, 3];
+const arr = [1, 2, 3];
 
-let value = arr.pop();
+const value = arr.pop();
 
 console.log(value); // 3
 console.log(arr);   // [1, 2]
@@ -587,36 +677,41 @@ arr.unshift(0);
 
 ## `shift()`
 
-Removes the first element.
+Removes the first element and returns it.
 
 ```js
-arr.shift();
+const first = arr.shift();
 ```
 
 ---
 
-# `slice()`
+# 11. `slice()` vs `splice()`
 
-Returns a portion of an array **without changing the original array**.
+## `slice()`
+
+Returns a portion of an array **without changing the original**.
 
 ```js
-let arr = [10, 20, 30, 40, 50];
+const arr = [10, 20, 30, 40, 50];
 
-let part = arr.slice(1, 4);
+const part = arr.slice(1, 4);
 
 console.log(part); // [20, 30, 40]
+console.log(arr);  // [10, 20, 30, 40, 50]
 ```
 
 The end index is not included.
 
 ---
 
-# `splice()`
+## `splice()`
 
-Used to **add, remove, or replace** elements at a specific position.
+Can **add, remove, or replace** elements at a specific position.
+
+Remove:
 
 ```js
-let arr = [10, 20, 30, 40];
+const arr = [10, 20, 30, 40];
 
 arr.splice(1, 2);
 
@@ -627,123 +722,284 @@ Here:
 
 ```text
 start = 1
-items to delete = 2
+deleteCount = 2
 ```
 
-It **mutates the original array**.
-
-It can also insert values:
+Insert:
 
 ```js
 arr.splice(1, 0, 20, 30);
 ```
 
----
-
-# `concat()`
-
-Combines arrays and returns a **new array**.
+Replace:
 
 ```js
-let a = [1, 2];
-let b = [3, 4];
+arr.splice(1, 2, 200, 300);
+```
 
-let c = a.concat(b);
+> `splice()` mutates the original array.
 
-console.log(c); // [1, 2, 3, 4]
+### Easy way to remember
+
+```text
+slice  → copy/extract → does NOT mutate
+splice → modify       → DOES mutate
 ```
 
 ---
 
-# Spread Operator `...`
+# 12. Combining Arrays
 
-Another convenient way to combine arrays:
+## `concat()`
+
+Returns a new array:
 
 ```js
-let a = [1, 2];
-let b = [3, 4];
+const a = [1, 2];
+const b = [3, 4];
 
-let c = [...a, ...b];
+const combined = a.concat(b);
+
+console.log(combined); // [1, 2, 3, 4]
+```
+
+## Spread Operator `...`
+
+Another common approach:
+
+```js
+const combined = [...a, ...b];
 ```
 
 This creates a new array containing the elements of both arrays.
 
 ---
 
-# `toString()` and `join()`
+# 13. Searching Arrays
 
 ```js
-let arr = [1, 2, 3];
+const fruits = ["apple", "banana", "orange", "banana"];
 
-console.log(arr.toString());
+console.log(fruits.indexOf("banana"));     // 1
+console.log(fruits.lastIndexOf("banana")); // 3
+console.log(fruits.indexOf("grape"));      // -1
+
+console.log(fruits.includes("banana")); // true
+console.log(fruits.includes("grape"));  // false
 ```
 
-`join()` gives you control over the separator:
+Use:
 
-```js
-console.log(arr.join("-"));
-// "1-2-3"
-```
+- `indexOf()` when you need an index.
+- `includes()` when you only need to know whether a value exists.
 
 ---
 
-# `sort()`
+# 14. `sort()`
 
-Sorts the array **in place** and returns the same array.
+`sort()` sorts the array **in place** and returns the same array.
 
 ### Important JavaScript behavior
 
-Without a comparison function, elements are converted to strings and sorted according to their string order based on ASCII values.
+Without a comparison function, elements are sorted according to their string representations:
+
 ```js
-let arr = [10, 2, 30, 4];
+const arr = [10, 2, 30, 4];
 
 arr.sort();
 
-console.log(arr);
+console.log(arr); // [10, 2, 30, 4] in string-order terms
 ```
 
-This does **not** perform normal numeric sorting.
-
-For numbers, use a comparator:
+For numeric sorting:
 
 ```js
-arr.sort((a, b) => a - b);
+const ascending = [10, 2, 30, 4];
+
+ascending.sort((a, b) => a - b);
+
+console.log(ascending); // [2, 4, 10, 30]
 ```
 
-Descending order:
+Descending:
 
 ```js
-arr.sort((a, b) => b - a);
+ascending.sort((a, b) => b - a);
 ```
+
+> Modern JavaScript specifies a **stable** sort, but the comparison function still determines the ordering logic.
 
 ---
 
-# `flat()`
+# 15. `flat()`
 
 Flattens nested arrays by a specified depth.
 
 ```js
-let arr = [1, [2, 3], [4, [5]]];
+const nested = [1, [2, 3], [4, [5]]];
 
-console.log(arr.flat());
+console.log(nested.flat());
 // [1, 2, 3, 4, [5]]
-```
 
-For deeper nesting:
-
-```js
-console.log(arr.flat(2));
+console.log(nested.flat(2));
+// [1, 2, 3, 4, 5]
 ```
 
 To flatten all levels:
 
 ```js
-arr.flat(Infinity);
+nested.flat(Infinity);
+```
+
+`flat()` returns a new array.
+
+---
+
+# 16. Array Iteration Methods
+
+These methods are essential for working with real application data.
+
+## `forEach()`
+
+Runs a function for each element.
+
+```js
+const numbers = [1, 2, 3];
+
+numbers.forEach((num) => {
+    console.log(num);
+});
+```
+
+> `forEach()` is for performing an action. It does not create a new transformed array.
+
+---
+
+## `map()`
+
+Creates a new array by transforming every element.
+
+```js
+const numbers = [1, 2, 3];
+
+const doubled = numbers.map((num) => num * 2);
+
+console.log(doubled); // [2, 4, 6]
+```
+
+Think:
+
+```text
+[1, 2, 3]
+   ↓ map(x => x * 2)
+[2, 4, 6]
 ```
 
 ---
 
-# Common Array Methods — Quick Table
+## `filter()`
+
+Creates a new array containing elements that pass a condition.
+
+```js
+const numbers = [1, 2, 3, 4, 5];
+
+const even = numbers.filter((num) => num % 2 === 0);
+
+console.log(even); // [2, 4]
+```
+
+---
+
+## `find()`
+
+Returns the **first element** that satisfies a condition.
+
+```js
+const numbers = [5, 12, 8, 20];
+
+const result = numbers.find((num) => num > 10);
+
+console.log(result); // 12
+```
+
+Returns `undefined` if nothing matches.
+
+---
+
+## `findIndex()`
+
+Returns the index of the first matching element.
+
+```js
+const numbers = [5, 12, 8, 20];
+
+console.log(numbers.findIndex((num) => num > 10));
+// 1
+```
+
+Returns `-1` if nothing matches.
+
+---
+
+## `some()`
+
+Checks whether **at least one** element satisfies a condition.
+
+```js
+const numbers = [1, 3, 5, 8];
+
+console.log(numbers.some((num) => num % 2 === 0));
+// true
+```
+
+---
+
+## `every()`
+
+Checks whether **all** elements satisfy a condition.
+
+```js
+const numbers = [2, 4, 6];
+
+console.log(numbers.every((num) => num % 2 === 0));
+// true
+```
+
+---
+
+## `reduce()`
+
+Reduces an array to a single value.
+
+```js
+const numbers = [10, 20, 30];
+
+const sum = numbers.reduce((total, num) => total + num, 0);
+
+console.log(sum); // 60
+```
+
+Think:
+
+```text
+10 + 20 + 30
+      ↓
+     60
+```
+
+### The four methods to master first
+
+```text
+map     → transform
+filter  → select
+find    → find one
+reduce  → combine into one value
+```
+
+---
+
+# 17. Common Array Methods — Quick Table
 
 | Method | Purpose | Mutates original? |
 |---|---|---|
@@ -754,21 +1010,29 @@ arr.flat(Infinity);
 | `slice()` | Extract a portion | No |
 | `splice()` | Add/remove/replace | Yes |
 | `concat()` | Combine arrays | No |
-| `join()` | Convert to string with separator | No |
+| `join()` | Convert to string | No |
 | `sort()` | Sort elements | Yes |
 | `flat()` | Flatten nested arrays | No |
+| `forEach()` | Run code for each item | No* |
+| `map()` | Transform items | No |
+| `filter()` | Select matching items | No |
+| `find()` | Find first match | No |
+| `some()` | At least one match? | No |
+| `every()` | Do all match? | No |
+| `reduce()` | Reduce to one value | No |
 
-> `sort()` returns the array after sorting it, but the important point is that it changes the existing array.
+\* `forEach()` itself does not mutate the array, but the callback can mutate objects or other external state.
 
-Arrays aren't arrays in JS but Objects because true arrays store similar data in `contiguous memory` but this is not true for JS arrays.
-# Video 8: JS Objects
+---
+
+# 18. Objects
 
 ## What is an Object?
 
 An object stores related information as **key-value pairs**.
 
 ```js
-let student = {
+const student = {
     name: "Abhinav",
     age: 21,
     course: "CSE"
@@ -789,10 +1053,10 @@ Objects are useful for representing structured data.
 
 ---
 
-# Creating Objects
+# 19. Creating Objects
 
 ```js
-let person = {
+const person = {
     name: "Abhinav",
     age: 21,
     isStudent: true
@@ -803,7 +1067,7 @@ An object can contain values of different types, including other objects, arrays
 
 ---
 
-# Reading Properties
+# 20. Reading Properties
 
 ## Dot notation
 
@@ -821,32 +1085,32 @@ console.log(person["name"]);
 Bracket notation is especially useful when the property name is stored in a variable:
 
 ```js
-let key = "age";
+const key = "age";
 
 console.log(person[key]);
 ```
 
 ---
 
-# Adding and Updating Properties
+# 21. Adding and Updating Properties
 
-Add a new property:
+Add:
 
 ```js
 person.city = "Delhi";
 ```
 
-Update an existing property:
+Update:
 
 ```js
 person.age = 22;
 ```
 
-Both operations use the same assignment syntax.
+Both use assignment syntax.
 
 ---
 
-# Deleting Properties
+# 22. Deleting Properties
 
 Use `delete`:
 
@@ -854,14 +1118,14 @@ Use `delete`:
 delete person.city;
 ```
 
-The property is removed from the object.
+The property is removed.
 
 ---
 
-# Objects Can Contain Objects and Arrays
+# 23. Nested Objects and Arrays
 
 ```js
-let student = {
+const student = {
     name: "Abhinav",
     marks: [90, 85, 92],
     address: {
@@ -871,25 +1135,25 @@ let student = {
 };
 ```
 
-Access nested values using repeated property access:
+Access nested values:
 
 ```js
-console.log(student.marks[0]);
-console.log(student.address.city);
+console.log(student.marks[0]);      // 90
+console.log(student.address.city);  // "Delhi"
 ```
 
 ---
 
-# Object References
+# 24. Object References
 
 Objects are reference values.
 
 ```js
-let obj1 = {
+const obj1 = {
     name: "Abhinav"
 };
 
-let obj2 = obj1;
+const obj2 = obj1;
 
 obj2.name = "Abhi";
 
@@ -906,14 +1170,14 @@ obj2 ─────┘
 
 ---
 
-# Useful Object Methods
+# 25. Useful Object Methods
 
 ## `Object.keys()`
 
 Returns an array containing the object's own enumerable property names.
 
 ```js
-let person = {
+const person = {
     name: "Abhinav",
     age: 21
 };
@@ -922,66 +1186,216 @@ console.log(Object.keys(person));
 // ["name", "age"]
 ```
 
----
-
 ## `Object.values()`
-
-Returns an array containing the corresponding property values.
 
 ```js
 console.log(Object.values(person));
 // ["Abhinav", 21]
 ```
 
----
-
 ## `Object.entries()`
 
-Returns an array of `[key, value]` pairs.
+Returns `[key, value]` pairs:
 
 ```js
 console.log(Object.entries(person));
+// [["name", "Abhinav"], ["age", 21]]
 ```
 
-Conceptually:
+These are especially useful with loops and array methods.
 
-```text
-[
-    ["name", "Abhinav"],
-    ["age", 21]
-]
+---
+
+# 26. Destructuring
+
+Destructuring extracts values from arrays or properties from objects.
+
+## Object destructuring
+
+```js
+const obj = { value: 13 };
+
+const { value: userValue } = obj;
+
+console.log(userValue); // 13
+```
+
+You can also use the same property name:
+
+```js
+const { name, age } = person;
+```
+
+## Array destructuring
+
+```js
+const students = ["Abhinav", "Rohit", "Mohit"];
+
+const [first, second] = students;
+
+console.log(first);  // "Abhinav"
+console.log(second); // "Rohit"
 ```
 
 ---
 
-# Objects and Arrays Together
+# 27. Spread and Copying
+
+The spread operator creates a **shallow copy** when used with arrays or objects.
+
+```js
+const original = {
+    name: "Abhinav",
+    age: 21
+};
+
+const copy = { ...original };
+
+copy.age = 22;
+
+console.log(original.age); // 21
+console.log(copy.age);     // 22
+```
+
+But nested objects are still shared:
+
+```js
+const original = {
+    user: {
+        name: "Abhinav"
+    }
+};
+
+const copy = { ...original };
+
+copy.user.name = "Abhi";
+
+console.log(original.user.name); // "Abhi"
+```
+
+This is why it is called a **shallow** copy.
+
+For a structured deep clone:
+
+```js
+const deepCopy = structuredClone(original);
+```
+
+> `structuredClone()` is useful for many structured data types, but it is not a universal clone for every JavaScript value.
+
+---
+
+# 28. Optional Chaining
+
+Optional chaining `?.` safely accesses a property when an intermediate value may be `null` or `undefined`.
+
+```js
+const user = {
+    profile: {
+        name: "Abhinav"
+    }
+};
+
+console.log(user.profile?.name); // "Abhinav"
+console.log(user.address?.city); // undefined
+```
+
+Without optional chaining, accessing `user.address.city` would throw because `user.address` is `undefined`.
+
+---
+
+# 29. Nullish Coalescing
+
+The `??` operator provides a fallback only when the left side is `null` or `undefined`.
+
+```js
+const username = null;
+
+console.log(username ?? "Guest");
+// "Guest"
+```
+
+This differs from `||`:
+
+```js
+const count = 0;
+
+console.log(count || 10); // 10
+console.log(count ?? 10); // 0
+```
+
+Use `??` when `0`, `false`, or `""` are valid values and only `null`/`undefined` should trigger the fallback.
+
+---
+
+# 30. Symbols as Object Keys
+
+A `Symbol` can be used as an object property key.
+
+```js
+const id = Symbol("id");
+
+const user = {
+    name: "Abhinav",
+    [id]: 123
+};
+
+console.log(user[id]); // 123
+```
+
+Symbol-keyed properties are useful when you need unique property keys.
+
+They are not returned by `Object.keys()`:
+
+```js
+console.log(Object.keys(user));
+// ["name"]
+```
+
+---
+
+# 31. Objects and Arrays Together
 
 A very common real-world structure is an **array of objects**:
 
 ```js
-let students = [
+const students = [
     { name: "Abhinav", age: 21 },
     { name: "Rohit", age: 22 },
     { name: "Mohit", age: 20 }
 ];
 ```
 
-Access values like:
+Access values:
 
 ```js
-console.log(students[0].name);
-console.log(students[1].age);
+console.log(students[0].name); // "Abhinav"
+console.log(students[1].age);  // 22
 ```
 
-This pattern is extremely common when working with API data.
+This pattern is extremely common when working with API responses and application data.
+
+For example:
+
+```js
+const adults = students.filter((student) => student.age >= 21);
+
+const names = students.map((student) => student.name);
+```
+
+This is where arrays + objects become genuinely useful.
 
 ---
 
-# A Note on Internal Implementation
+# 32. A Note on Internal Implementation
 
-JavaScript objects are implemented by the engine using internal data structures and optimizations. The exact representation is **engine-dependent**.
+JavaScript objects and arrays are implemented by the JavaScript engine using internal data structures and optimizations.
 
-For learning JavaScript, focus first on the observable behavior:
+The exact representation is **engine-dependent**.
+
+Do not treat a particular implementation detail—such as "all objects are hash maps" or "all arrays are contiguous memory"—as part of the JavaScript language specification.
+
+For learning JavaScript, focus first on observable behavior:
 
 ```text
 Object
@@ -989,13 +1403,17 @@ Object
 properties (key → value)
   ↓
 read / add / update / delete
-```
 
-Avoid treating a particular internal structure such as a hash map as a guaranteed specification of how every JavaScript engine stores every object.
+Array
+  ↓
+ordered collection
+  ↓
+indexed access + array methods
+```
 
 ---
 
-# Arrays vs Objects
+# 33. Arrays vs Objects
 
 ```text
 Array
@@ -1006,7 +1424,7 @@ Access commonly by numeric index
 
 Object
   ↓
-Key-value collection
+Collection of named properties
   ↓
 Access by property key
 ```
@@ -1014,21 +1432,21 @@ Access by property key
 Example:
 
 ```js
-let fruits = ["Apple", "Banana", "Mango"];
+const fruits = ["Apple", "Banana", "Mango"];
 
-let person = {
+const person = {
     name: "Abhinav",
     age: 21
 };
 ```
 
-Use an array when **order and indexed elements** are the main idea.
+Use an array when **order and a sequence of elements** are the main idea.
 
-Use an object when **named properties describing one entity** are the main idea.
+Use an object when **named properties describing a value/entity** are the main idea.
 
 ---
 
-# Quick Cheat Sheet
+# 34. Quick Cheat Sheet
 
 ## Numbers
 
@@ -1075,6 +1493,7 @@ str.trim();
 ```js
 new Date();
 Date.now();
+date.toISOString();
 date.getFullYear();
 date.getMonth();
 date.getDate();
@@ -1094,8 +1513,18 @@ arr.slice();
 arr.splice();
 arr.concat();
 arr.join();
+arr.includes();
 arr.sort();
 arr.flat();
+
+arr.forEach();
+arr.map();
+arr.filter();
+arr.find();
+arr.findIndex();
+arr.some();
+arr.every();
+arr.reduce();
 ```
 
 ## Objects
@@ -1105,37 +1534,64 @@ obj.key;
 obj["key"];
 obj.key = value;
 delete obj.key;
+
 Object.keys(obj);
 Object.values(obj);
 Object.entries(obj);
 ```
 
+## Modern syntax
+
+```js
+const { name, age } = person;
+const [first, second] = students;
+
+const copy = { ...person };
+const merged = [...a, ...b];
+
+user.profile?.name;
+value ?? defaultValue;
+structuredClone(obj);
+```
+
 ---
 
-# Big Picture
+# 35. Big Picture
 
 ```text
 JavaScript Data
-      │
-      ├── Numbers
-      │     ├── Number methods
-      │     └── Math object
-      │
-      ├── Strings
-      │     └── String methods
-      │
-      ├── Dates
-      │     └── timestamps / date components
-      │
-      ├── Arrays
-      │     ├── indexed data
-      │     ├── add/remove
-      │     ├── extract/modify
-      │     └── sort/flatten/combine
-      │
-      └── Objects
-            ├── key-value data
-            ├── nested data
-            ├── CRUD operations
-            └── Object utility methods
+│
+├── Numbers
+│   ├── Number methods
+│   └── Math object
+│
+├── Strings
+│   ├── Template literals
+│   ├── Searching
+│   ├── Extracting
+│   └── Transforming
+│
+├── Dates
+│   ├── Date objects
+│   ├── Components
+│   └── Timestamps
+│
+├── Arrays
+│   ├── Indexed data
+│   ├── Add/remove
+│   ├── Extract/modify
+│   ├── Search
+│   ├── Sort/flatten
+│   └── map/filter/find/reduce
+│
+└── Objects
+    ├── Key-value data
+    ├── Nested data
+    ├── CRUD operations
+    ├── References
+    ├── Destructuring
+    ├── Spread/copying
+    └── Object utility methods
 ```
+
+---
