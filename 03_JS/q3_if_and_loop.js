@@ -7,6 +7,19 @@ for (let i = 0; i < 10; ++i) {
     console.log(i);
 }
 
+// for each loop
+
+let arr = [1, 2, 3, 4, 5];
+
+arr.forEach((value, index) => {
+    console.log(`Index: ${index}, Value: ${value}`);
+});
+
+// for ...of loop
+
+for (const value of arr) {
+    console.log(value);
+};
 
 // while loop
 
