@@ -76,3 +76,59 @@ Difference between id.innerHTML, id.textContent and id.innerText:
 - Read: You can read the content of elements using properties like `textContent`, `innerHTML`, or `innerText`, as well as methods like `getElementById()`, `getElementsByClassName()`, and `querySelector()`.
 - Update: You can update the content or attributes of elements using properties like `textContent`, `innerHTML`, or `setAttribute()`, as well as methods like `classList.add()` or `classList.remove()`.
 - Delete: You can remove elements from the DOM using methods like `removeChild()` or `remove()`.
+
+## DOM Events and Event Listeners
+DOM events are actions or occurrences that happen in the browser, such as user interactions (clicks, key presses, mouse movements), changes to the DOM (adding or removing elements), or browser events (loading, resizing). Event listeners are functions that are attached to specific elements and are triggered when a particular event occurs.
+You can add event listeners to elements using the `addEventListener()` method, which takes the event type and a callback function as arguments. For example, you can listen for a click event on a button and execute a function when the button is clicked.
+
+1. onclick: Triggered when an element is clicked. `click` `dblclick` `mousedown` `mouseup`
+2. onmouseover: Triggered when the mouse pointer is moved over an element. `mouseover` `mousemove` `mouseout`
+3. onmouseout: Triggered when the mouse pointer is moved out of an element.
+4. onkeydown: Triggered when a key is pressed down. `keydown` `keypress` `keyup`
+5. onkeyup: Triggered when a key is released.
+6. onsubmit: Triggered when a form is submitted. `submit`
+7. onfocus: Triggered when an element gains focus. `focus` `blur`
+etc.
+
+```html
+<button id="myButton" onclick="handleClick()">Click Me</button>
+<button id="myButton">Click Me</button>
+```
+
+```javascript
+const handleClick = () => {
+  alert('Button clicked!');
+};
+
+let button = document.getElementById('myButton');
+button.addEventListener('click', handleClick);
+```
+
+Or
+```javascript
+let button = document.getElementById('myButton');
+button.addEventListener('click', () => {
+  alert('Button clicked!');
+});
+```
+
+#### Event Bubbling and Capturing
+Event bubbling and capturing are two phases of event propagation in the DOM. When an event occurs on an element, it can propagate through the DOM tree in two ways: capturing and bubbling.
+- Event Capturing: In the capturing phase, the event starts from the root of the DOM tree and travels down to the target element. It allows parent elements to handle the event before it reaches the target element.
+- Event Bubbling: In the bubbling phase, the event starts from the target element and bubbles up to the root of the DOM tree. It allows parent elements to handle the event after it has been handled by the target element.
+```javascript
+const parentElement = document.getElementById('parent');
+parentElement.addEventListener('click', () => {
+  console.log('Parent element clicked!');
+}, true); // Capturing phase
+```
+
+### Event Object
+The event object is an object that is automatically passed to the event handler function when an event occurs. It contains information about the event, such as the type of event, the target element, and any additional data associated with the event. You can access the event object by including a parameter in your event handler function.
+
+```javascript
+const handleClick = (event) => {
+  console.log('Event type:', event.type);
+  console.log('Target element:', event.target);
+};
+```
