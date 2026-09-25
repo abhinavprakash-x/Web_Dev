@@ -8,7 +8,7 @@ eg.
 <h1 id="title">Hello World</h1>
 ```
 
-```
+```js
 {
   "tagName": "H1",
   "id": "title",
@@ -112,7 +112,7 @@ button.addEventListener('click', () => {
 });
 ```
 
-#### Event Bubbling and Capturing
+## Event Bubbling and Capturing
 Event bubbling and capturing are two phases of event propagation in the DOM. When an event occurs on an element, it can propagate through the DOM tree in two ways: capturing and bubbling.
 - Event Capturing: In the capturing phase, the event starts from the root of the DOM tree and travels down to the target element. It allows parent elements to handle the event before it reaches the target element.
 - Event Bubbling: In the bubbling phase, the event starts from the target element and bubbles up to the root of the DOM tree. It allows parent elements to handle the event after it has been handled by the target element.

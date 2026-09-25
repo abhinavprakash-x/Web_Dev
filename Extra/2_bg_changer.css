@@ -1,0 +1,57 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.parent {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.btn {
+    padding: 10px 20px;
+    margin: 0 10px;
+
+    border: 2px solid aqua;
+    border-radius: 5px;
+
+    color: aqua;
+    cursor: pointer;
+}
+
+#red {
+    background-color: red;
+}
+
+#green {
+    background-color: green;
+}
+
+#blue {
+    background-color: blue;
+}
+
+#yellow {
+    background-color: yellow;
+}
+
+#black {
+    background-color: black;
+}
+
+#white {
+    background-color: white;
+}
+
+@media (max-width: 600px) {
+    .parent {
+        flex-direction: column;
+    }
+
+    .btn {
+        margin: 10px 0;
+    }
+}
