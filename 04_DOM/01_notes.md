@@ -1,134 +1,961 @@
-# DOM
-Document Object Model
-Elements from html are represented as objects in the DOM. The DOM is a tree structure where each node is an object representing a part of the document.
-These objects can be manipulated using JavaScript to change the content, structure, and style of a web page dynamically.
+# DOM — Document Object Model
 
-eg.
+The **DOM (Document Object Model)** is a programming interface that represents an HTML document as a **tree of objects (nodes)**.
+
+JavaScript can use the DOM to:
+
+- Read HTML elements
+- Change their content
+- Change their attributes
+- Change their styles
+- Create new elements
+- Remove elements
+- Respond to user interactions through events
+
+In simple terms:
+
+> **HTML creates the structure → CSS styles it → JavaScript manipulates it through the DOM.**
+
+---
+
+# 1. HTML → DOM
+
+Consider this HTML:
+
 ```html
 <h1 id="title">Hello World</h1>
 ```
 
+The browser parses the HTML and creates a DOM representation of it.
+
+Conceptually, the element can be thought of as an object containing information such as:
+
 ```js
 {
-  "tagName": "H1",
-  "id": "title",
-  "textContent": "Hello DOM"
+    tagName: "H1",
+    id: "title",
+    textContent: "Hello World"
 }
 ```
 
-```javascript
-const titleElement = window.document.getElementById('title');
-titleElement.textContent = 'Hello DOM';
-```
+The actual DOM object contains **many more properties and methods** than this simplified example.
 
-window is the global object in browsers, and it contains the document object, which represents the entire HTML document. The document object provides methods to access and manipulate elements in the DOM.
+JavaScript can access that object:
+
 ```js
-window.alert('Hello World');
-window.open('https://www.abhinavprakash.me');
-window.document.getElementById('title').textContent = 'Hello DOM';
+const titleElement = document.getElementById("title");
+
+titleElement.textContent = "Hello DOM";
 ```
 
-window prefix is optional, so you can also write:
+The page changes from:
+
+```text
+Hello World
+```
+
+to:
+
+```text
+Hello DOM
+```
+
+The DOM therefore acts as the bridge between **JavaScript and the HTML document**.
+
+---
+
+# 2. `window` and `document`
+
+In a browser, `window` represents the browser window and serves as the **global object** for the page.
+
+The `document` object represents the HTML document loaded in that window.
+
+Conceptually:
+
+```text
+Window
+  └── Document
+       └── HTML
+            ├── Head
+            └── Body
+```
+
+For example:
+
 ```js
-alert('Hello World');
-open('https://www.abhinavprakash.me');
-document.getElementById('title').textContent = 'Hello DOM';
+window.alert("Hello World");
+
+window.document.getElementById("title").textContent = "Hello DOM";
 ```
 
-document is the object that represents the HTML document loaded in the browser. It provides various methods and properties to interact with the DOM, such as selecting elements, creating new elements, and modifying existing ones.
+Because `window` is the global object in browser JavaScript, its properties and methods can generally be accessed without explicitly writing `window.`:
 
-## DOM Tree Structure
-The DOM tree structure represents the hierarchical relationship between elements in an HTML document. Each element is a node in the tree, and the relationships between nodes are represented as parent-child relationships. The root of the tree is the document object, which contains the HTML element as its child. The HTML element contains the head and body elements, which in turn contain other elements like title, h1, p, div, etc.
+```js
+alert("Hello World");
 
-```mermaid
-graph TD
-    A[Window] --> B[Document]
-    B --> C[HTML]
-    C --> D[Head]
-    D --> E[Title]
-    C --> F[Body]
-    F --> G[H1]
-    F --> H[P]
-    F --> I[Div]
-    H --> J[Style]
-    J --> K[CSS]
-    K --> L[Color]
-    K --> M[Font]
-    K --> N[Size]
-    H --> O[Script]
-    H --> P[textContent]
+document.getElementById("title").textContent = "Hello DOM";
 ```
 
-Difference between id.innerHTML, id.textContent and id.innerText:
-`id.innerHTML` returns the HTML content of an element, including any nested HTML tags. It allows you to get or set the HTML structure within an element.
-`id.textContent` returns the text content of an element, excluding any HTML tags. It retrieves or sets the plain text within an element, ignoring any formatting or nested elements.
-`id.innerText` returns the visible text content of an element, taking into account CSS styles and layout. It retrieves or sets the text that is actually rendered on the page, considering factors like visibility and line breaks.
+So these are equivalent in normal browser code:
 
-## Other DOM Methods
-- `document.getElementById(id)`: Selects an element by its unique ID.
-- `document.getElementsByClassName(className)`: Selects all elements with the specified class name.
-- `document.getElementsByTagName(tagName)`: Selects all elements with the specified tag name.
-- `document.querySelector(selector)`: Selects the first element that matches the specified CSS selector.
-- `document.querySelectorAll(selector)`: Selects all elements that match the specified CSS selector.
+```js
+window.alert("Hello World");
+```
 
-## CRUD Operations in DOM
-- Create: You can create new elements using `document.createElement(tagName)` and append them to the DOM using methods like `appendChild()` or `insertBefore()`.
-- Read: You can read the content of elements using properties like `textContent`, `innerHTML`, or `innerText`, as well as methods like `getElementById()`, `getElementsByClassName()`, and `querySelector()`.
-- Update: You can update the content or attributes of elements using properties like `textContent`, `innerHTML`, or `setAttribute()`, as well as methods like `classList.add()` or `classList.remove()`.
-- Delete: You can remove elements from the DOM using methods like `removeChild()` or `remove()`.
+```js
+alert("Hello World");
+```
 
-## DOM Events and Event Listeners
-DOM events are actions or occurrences that happen in the browser, such as user interactions (clicks, key presses, mouse movements), changes to the DOM (adding or removing elements), or browser events (loading, resizing). Event listeners are functions that are attached to specific elements and are triggered when a particular event occurs.
-You can add event listeners to elements using the `addEventListener()` method, which takes the event type and a callback function as arguments. For example, you can listen for a click event on a button and execute a function when the button is clicked.
+And:
 
-1. onclick: Triggered when an element is clicked. `click` `dblclick` `mousedown` `mouseup`
-2. onmouseover: Triggered when the mouse pointer is moved over an element. `mouseover` `mousemove` `mouseout`
-3. onmouseout: Triggered when the mouse pointer is moved out of an element.
-4. onkeydown: Triggered when a key is pressed down. `keydown` `keypress` `keyup`
-5. onkeyup: Triggered when a key is released.
-6. onsubmit: Triggered when a form is submitted. `submit`
-7. onfocus: Triggered when an element gains focus. `focus` `blur`
-etc.
+```js
+window.document
+```
+
+```js
+document
+```
+
+### Important
+
+`window` is **browser-specific**. It is not a universal JavaScript object in every environment.
+
+---
+
+# 3. The DOM Tree
+
+The DOM represents the document as a **tree structure**.
+
+For example:
 
 ```html
-<button id="myButton" onclick="handleClick()">Click Me</button>
-<button id="myButton">Click Me</button>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Page</title>
+</head>
+
+<body>
+    <h1>Hello</h1>
+    <p>Welcome!</p>
+    <div>Content</div>
+</body>
+</html>
 ```
 
-```javascript
-const handleClick = () => {
-  alert('Button clicked!');
-};
+Conceptually:
 
-let button = document.getElementById('myButton');
-button.addEventListener('click', handleClick);
+```text
+Document
+└── HTML
+    ├── HEAD
+    │   └── TITLE
+    │       └── "My Page"
+    │
+    └── BODY
+        ├── H1
+        │   └── "Hello"
+        │
+        ├── P
+        │   └── "Welcome!"
+        │
+        └── DIV
+            └── "Content"
 ```
 
-Or
-```javascript
-let button = document.getElementById('myButton');
-button.addEventListener('click', () => {
-  alert('Button clicked!');
+This tree represents relationships between nodes.
+
+For example:
+
+```text
+BODY
+ ├── H1
+ ├── P
+ └── DIV
+```
+
+Here:
+
+- `BODY` is the **parent** of `H1`, `P`, and `DIV`.
+- `H1`, `P`, and `DIV` are **children** of `BODY**.
+- `H1`, `P`, and `DIV` are also **siblings** of each other.
+
+---
+
+# 4. Nodes
+
+Everything in the DOM is represented as a **node**.
+
+Common node types include:
+
+- Document nodes
+- Element nodes
+- Text nodes
+- Comment nodes
+
+For example:
+
+```html
+<h1>Hello</h1>
+```
+
+contains:
+
+```text
+Element node
+└── H1
+    └── Text node
+        └── "Hello"
+```
+
+This distinction becomes useful when working with the DOM tree directly.
+
+---
+
+# 5. Selecting Elements
+
+Before modifying an element, JavaScript usually needs to **select** it.
+
+## `getElementById()`
+
+Selects an element by its ID:
+
+```js
+const title = document.getElementById("title");
+```
+
+Example:
+
+```html
+<h1 id="title">Hello</h1>
+```
+
+---
+
+## `getElementsByClassName()`
+
+Selects elements having a particular class:
+
+```js
+const items = document.getElementsByClassName("item");
+```
+
+It returns an **HTMLCollection**.
+
+---
+
+## `getElementsByTagName()`
+
+Selects elements by their tag name:
+
+```js
+const paragraphs = document.getElementsByTagName("p");
+```
+
+---
+
+## `querySelector()`
+
+Selects the **first** element matching a CSS selector:
+
+```js
+const title = document.querySelector("#title");
+```
+
+Class:
+
+```js
+const item = document.querySelector(".item");
+```
+
+Tag:
+
+```js
+const paragraph = document.querySelector("p");
+```
+
+More complex CSS selector:
+
+```js
+const item = document.querySelector(".container .item");
+```
+
+---
+
+## `querySelectorAll()`
+
+Selects **all** elements matching a CSS selector:
+
+```js
+const items = document.querySelectorAll(".item");
+```
+
+It returns a **NodeList**.
+
+Example:
+
+```js
+const buttons = document.querySelectorAll("button");
+
+buttons.forEach(button => {
+    console.log(button.textContent);
 });
 ```
 
-## Event Bubbling and Capturing
-Event bubbling and capturing are two phases of event propagation in the DOM. When an event occurs on an element, it can propagate through the DOM tree in two ways: capturing and bubbling.
-- Event Capturing: In the capturing phase, the event starts from the root of the DOM tree and travels down to the target element. It allows parent elements to handle the event before it reaches the target element.
-- Event Bubbling: In the bubbling phase, the event starts from the target element and bubbles up to the root of the DOM tree. It allows parent elements to handle the event after it has been handled by the target element.
-```javascript
-const parentElement = document.getElementById('parent');
-parentElement.addEventListener('click', () => {
-  console.log('Parent element clicked!');
-}, true); // Capturing phase
+---
+
+# 6. Quick Selector Comparison
+
+| Method | Selects | Result |
+|---|---|---|
+| `getElementById()` | One ID | Element / `null` |
+| `getElementsByClassName()` | Matching classes | HTMLCollection |
+| `getElementsByTagName()` | Matching tags | HTMLCollection |
+| `querySelector()` | First CSS match | Element / `null` |
+| `querySelectorAll()` | All CSS matches | NodeList |
+
+### General rule
+
+For modern code, `querySelector()` and `querySelectorAll()` are extremely useful because they accept normal CSS selectors.
+
+---
+
+# 7. Changing Content
+
+There are three commonly encountered properties:
+
+```js
+element.innerHTML
+element.textContent
+element.innerText
 ```
 
-### Event Object
-The event object is an object that is automatically passed to the event handler function when an event occurs. It contains information about the event, such as the type of event, the target element, and any additional data associated with the event. You can access the event object by including a parameter in your event handler function.
+They are **not identical**.
 
-```javascript
-const handleClick = (event) => {
-  console.log('Event type:', event.type);
-  console.log('Target element:', event.target);
+---
+
+## `textContent`
+
+Gets or sets the text content of an element.
+
+```js
+title.textContent = "Hello DOM";
+```
+
+If the element contains nested HTML:
+
+```html
+<div id="box">
+    Hello
+    <strong>World</strong>
+</div>
+```
+
+then:
+
+```js
+box.textContent;
+```
+
+returns the text content, including text inside the nested element:
+
+```text
+Hello World
+```
+
+It does not interpret a string as HTML.
+
+For example:
+
+```js
+box.textContent = "<strong>Hello</strong>";
+```
+
+will display:
+
+```text
+<strong>Hello</strong>
+```
+
+rather than creating a `<strong>` element.
+
+---
+
+# 8. `innerHTML`
+
+`innerHTML` gets or sets the HTML markup **inside** an element.
+
+```js
+box.innerHTML = "<strong>Hello</strong>";
+```
+
+Now the browser interprets the string as HTML:
+
+```html
+<div id="box">
+    <strong>Hello</strong>
+</div>
+```
+
+You can also read it:
+
+```js
+console.log(box.innerHTML);
+```
+
+### Important
+
+Because `innerHTML` parses strings as HTML, inserting untrusted user input through it can create **XSS/security problems**.
+
+For plain text, prefer:
+
+```js
+element.textContent = userInput;
+```
+
+---
+
+# 9. `innerText`
+
+`innerText` deals with the **rendered/visible text** of an element and is affected by CSS and layout.
+
+For example:
+
+```js
+element.innerText;
+```
+
+can differ from:
+
+```js
+element.textContent;
+```
+
+because `innerText` considers whether text is actually rendered.
+
+### Practical distinction
+
+```text
+textContent → text in the DOM
+innerText   → rendered/visible text
+innerHTML   → HTML markup inside the element
+```
+
+---
+
+# 10. Creating Elements
+
+JavaScript can create completely new DOM elements.
+
+```js
+const paragraph = document.createElement("p");
+```
+
+Then set its content:
+
+```js
+paragraph.textContent = "Hello from JavaScript!";
+```
+
+And add it to the document:
+
+```js
+document.body.appendChild(paragraph);
+```
+
+Result:
+
+```html
+<body>
+    ...
+    <p>Hello from JavaScript!</p>
+</body>
+```
+
+---
+
+# 11. CRUD Operations in the DOM
+
+DOM manipulation can be thought of using the familiar **CRUD** idea.
+
+## Create
+
+Create a new element:
+
+```js
+const div = document.createElement("div");
+```
+
+Add it:
+
+```js
+document.body.appendChild(div);
+```
+
+---
+
+## Read
+
+Read information from an element:
+
+```js
+const title = document.querySelector("h1");
+
+console.log(title.textContent);
+```
+
+---
+
+## Update
+
+Change content:
+
+```js
+title.textContent = "New Title";
+```
+
+Change attributes:
+
+```js
+title.setAttribute("id", "newTitle");
+```
+
+Change classes:
+
+```js
+title.classList.add("important");
+```
+
+---
+
+## Delete
+
+Remove an element:
+
+```js
+title.remove();
+```
+
+Older code may use:
+
+```js
+parent.removeChild(title);
+```
+
+---
+
+# 12. Common DOM Manipulation Methods
+
+### Creating
+
+```js
+document.createElement("div");
+```
+
+### Adding
+
+```js
+parent.appendChild(child);
+```
+
+Modern alternatives include:
+
+```js
+parent.append(child);
+```
+
+and:
+
+```js
+parent.prepend(child);
+```
+
+### Removing
+
+```js
+element.remove();
+```
+
+### Attributes
+
+```js
+element.setAttribute("class", "box");
+element.getAttribute("class");
+element.removeAttribute("class");
+```
+
+### Classes
+
+```js
+element.classList.add("active");
+element.classList.remove("active");
+element.classList.toggle("active");
+element.classList.contains("active");
+```
+
+---
+
+# 13. DOM Events
+
+An **event** is something that happens in the browser.
+
+Examples:
+
+- User clicks a button
+- User presses a key
+- Mouse moves
+- An input receives focus
+- A form is submitted
+- The page finishes loading
+- The window is resized
+
+JavaScript can respond to these events using **event listeners**.
+
+---
+
+# 14. `addEventListener()`
+
+The general syntax is:
+
+```js
+element.addEventListener(eventType, callback);
+```
+
+Example:
+
+```html
+<button id="myButton">Click Me</button>
+```
+
+```js
+const button = document.getElementById("myButton");
+
+button.addEventListener("click", () => {
+    alert("Button clicked!");
+});
+```
+
+When the button is clicked, the callback function runs.
+
+This is an example of a **callback function**:
+
+```js
+() => {
+    alert("Button clicked!");
+}
+```
+
+The browser calls it when the specified event occurs.
+
+---
+
+# 15. Inline Event Handlers
+
+You may also see:
+
+```html
+<button onclick="handleClick()">
+    Click Me
+</button>
+```
+
+with:
+
+```js
+const handleClick = () => {
+    alert("Button clicked!");
 };
 ```
+
+This works, but for most application code, keeping JavaScript separate from HTML and using:
+
+```js
+addEventListener()
+```
+
+is generally cleaner.
+
+Preferred:
+
+```js
+const button = document.getElementById("myButton");
+
+button.addEventListener("click", handleClick);
+```
+
+---
+
+# 16. Common Events
+
+Some common DOM events are:
+
+| Event | Meaning |
+|---|---|
+| `click` | Element is clicked |
+| `dblclick` | Element is double-clicked |
+| `mousedown` | Mouse button is pressed |
+| `mouseup` | Mouse button is released |
+| `mousemove` | Mouse moves |
+| `mouseover` | Pointer moves over an element |
+| `mouseout` | Pointer leaves an element |
+| `keydown` | Key is pressed |
+| `keyup` | Key is released |
+| `focus` | Element receives focus |
+| `blur` | Element loses focus |
+| `submit` | Form is submitted |
+
+Example:
+
+```js
+input.addEventListener("keydown", () => {
+    console.log("Key pressed");
+});
+```
+
+---
+
+# 17. The Event Object
+
+When an event occurs, the browser provides an **event object** containing information about that event.
+
+Example:
+
+```js
+const handleClick = (event) => {
+    console.log("Event type:", event.type);
+    console.log("Target:", event.target);
+};
+```
+
+Then:
+
+```js
+button.addEventListener("click", handleClick);
+```
+
+For a click, `event` contains information such as:
+
+```js
+event.type
+event.target
+```
+
+---
+
+## `event.target`
+
+`event.target` is the element on which the event originally occurred.
+
+Example:
+
+```js
+button.addEventListener("click", (event) => {
+    console.log(event.target);
+});
+```
+
+If the button is clicked, the button will be the target.
+
+---
+
+# 18. Event Propagation
+
+Events don't necessarily stay on the element where they occurred.
+
+They propagate through the DOM.
+
+The propagation process has three conceptual phases:
+
+```text
+1. Capturing phase
+2. Target phase
+3. Bubbling phase
+```
+
+---
+
+# 19. Event Capturing
+
+During the **capturing phase**, the event travels from the outer part of the DOM toward the target.
+
+Conceptually:
+
+```text
+Window
+  ↓
+Document
+  ↓
+HTML
+  ↓
+Parent
+  ↓
+Button
+```
+
+You can register a capturing listener using the third argument:
+
+```js
+parentElement.addEventListener(
+    "click",
+    () => {
+        console.log("Parent clicked during capture");
+    },
+    true
+);
+```
+
+The `true` means the listener is registered for the **capturing phase**.
+
+---
+
+# 20. Event Bubbling
+
+After reaching the target, the event can propagate back upward through its ancestors.
+
+Conceptually:
+
+```text
+Button
+  ↑
+Parent
+  ↑
+Body
+  ↑
+HTML
+  ↑
+Document
+```
+
+This is called **event bubbling**.
+
+For example:
+
+```js
+parentElement.addEventListener("click", () => {
+    console.log("Parent clicked!");
+});
+```
+
+If a child inside `parentElement` is clicked, the event can bubble up to the parent.
+
+---
+
+# 21. Capturing vs Bubbling
+
+```text
+CAPTURING
+
+Document
+   ↓
+ Parent
+   ↓
+ Button
+   ↓
+ TARGET
+
+
+BUBBLING
+
+TARGET
+   ↑
+ Button
+   ↑
+ Parent
+   ↑
+Document
+```
+
+Most event listeners you write use the default **bubbling phase**:
+
+```js
+element.addEventListener("click", handler);
+```
+
+Capturing can be requested with:
+
+```js
+element.addEventListener("click", handler, true);
+```
+
+---
+
+# 22. Why Event Bubbling Is Useful
+
+Event bubbling makes **event delegation** possible.
+
+Instead of adding listeners to many individual elements:
+
+```js
+buttons.forEach(button => {
+    button.addEventListener("click", handleClick);
+});
+```
+
+you can sometimes attach one listener to a parent:
+
+```js
+container.addEventListener("click", (event) => {
+    console.log(event.target);
+});
+```
+
+The parent receives bubbled events from its children.
+
+This becomes especially useful when elements are dynamically created.
+
+---
+
+# 23. Big Picture
+
+The DOM connects your JavaScript code to the webpage.
+
+```text
+HTML
+ │
+ ▼
+Browser parses HTML
+ │
+ ▼
+DOM Tree
+ │
+ ▼
+JavaScript
+ │
+ ├── Select elements
+ ├── Read content
+ ├── Change content
+ ├── Change attributes
+ ├── Change classes
+ ├── Create elements
+ ├── Remove elements
+ └── Listen for events
+```
+
+The basic workflow is:
+
+```text
+SELECT
+   ↓
+READ / MODIFY
+   ↓
+LISTEN FOR EVENTS
+   ↓
+RESPOND TO USER
+```
+
+For example:
+
+```js
+const button = document.querySelector("#myButton");
+const title = document.querySelector("#title");
+
+button.addEventListener("click", () => {
+    title.textContent = "Button was clicked!";
+});
+```
+
+Here:
+
+1. `querySelector()` **selects** the elements.
+2. `addEventListener()` **listens** for a click.
+3. The callback **runs
