@@ -63,3 +63,56 @@ fetchData(() => {
 ```
 
 Fix? Use Promises or async/await to avoid callback hell and make the code more readable and maintainable.
+
+## Promises
+Promises are a way to handle asynchronous operations in JavaScript. They represent a value that may be available now, in the future, or never. A promise can be in one of three states: pending, fulfilled, or rejected.
+
+- Pending: The initial state of a promise. The operation is still ongoing.
+- Fulfilled: The operation completed successfully, and the promise has a value.
+- Rejected: The operation failed, and the promise has a reason for the failure.
+
+```javascript
+
+const p1 = fetch('https://api.github.com/users');
+const p2 = p1.then(response => {
+  return response.json();
+});
+
+p2.then(data => {
+  console.log(data);
+});
+```
+
+```javascript
+fetch('https://api.github.com/users')
+  .then(response => response.json())
+  .then(data => {
+    console.log(data);
+  }).catch(error => {
+    console.error('Error:', error);
+  });
+```
+
+JSON : JavaScript Object Notation is a lightweight data interchange format that is easy for humans to read and write and easy for machines to parse and generate. It is often used to transmit data between a server and a web application as text.
+
+JS Object vs JSON:
+- JS Object: A data structure that represents a collection of key-value pairs in JavaScript.
+- JSON: A string representation of a JavaScript object that can be transmitted over the network.
+
+- JS Object: can contain functions, undefined, and other non-serializable values.
+- JSON: can only contain serializable values like strings, numbers, arrays, and other objects. It cannot contain functions or undefined values.
+
+- JS Object: has more flexible syntax and can use single or double quotes for keys and values. commas at the end of the last key-value pair are optional.
+- JSON: has strict syntax rules and requires double quotes for keys and string values and commas at the end of each key-value pair except for the last one.
+
+- JS Object: A data type.
+- JSON: Just a String.
+
+JSON.parse() : Converts a JSON string into a JavaScript object.
+JSON.stringify() : Converts a JavaScript object into a JSON string.
+
+1. fetch() : A Web API that allows you to make HTTP requests and handle responses. It returns a promise that resolves to the response of the request.
+2. .then() : A method that is called on a promise to handle the resolved value or the rejected reason. It takes two arguments: a callback function for the fulfilled state and an optional callback function for the rejected state.
+3. .catch() : A method that is called on a promise to handle the rejected reason. It takes one argument: a callback function for the rejected state.
+4. .ok : A property of the response object that indicates whether the HTTP request was successful (status code 200-299) or not. It returns a boolean value: true for success and false for failure.
+5. .finally() : A method that is called on a promise to execute a callback function regardless of whether the promise was fulfilled or rejected. It takes one argument: a callback function that will be executed after the promise settles.
