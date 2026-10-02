@@ -116,3 +116,37 @@ JSON.stringify() : Converts a JavaScript object into a JSON string.
 3. .catch() : A method that is called on a promise to handle the rejected reason. It takes one argument: a callback function for the rejected state.
 4. .ok : A property of the response object that indicates whether the HTTP request was successful (status code 200-299) or not. It returns a boolean value: true for success and false for failure.
 5. .finally() : A method that is called on a promise to execute a callback function regardless of whether the promise was fulfilled or rejected. It takes one argument: a callback function that will be executed after the promise settles.
+
+## Async/Await
+Async/await is a syntactic sugar built on top of promises that allows you to write asynchronous code in a more synchronous and readable manner. It makes it easier to work with promises by allowing you to use the `await` keyword to pause the execution of an async function until a promise is resolved or rejected.
+
+1. `async` : A keyword used to declare an asynchronous function. It allows the use of the `await` keyword inside the function.
+2. `await` : A keyword used to pause the execution of an async function until a promise is resolved or rejected. It can only be used inside an async function.
+3. `try/catch` : A block of code used to handle errors in async/await. The `try` block contains the code that may throw an error, and the `catch` block contains the code that handles the error.
+4. `async` : it makes a function return a promise. If the function returns a value, the promise will be resolved with that value. If the function throws an error, the promise will be rejected with that error.
+
+```javascript
+async function fetchData() {
+  try {
+    const response = await fetch('https://api.github.com/users');
+    const data = await response.json();
+    console.log(data);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+fetchData();
+```
+
+NOTE: Always use `await` inside an `async` function.
+
+```javascript
+async function userDetails() {
+  const [id, name, email] = await Promise.all([
+    fetch('https://api.github.com/users/1').then(res => res.json()),
+    fetch('https://api.github.com/users/2').then(res => res.json()),
+    fetch('https://api.github.com/users/3').then(res => res.json())
+  ]);
+}
+```
