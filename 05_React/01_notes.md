@@ -84,3 +84,59 @@ const e2 = <h1 id='title' style={{color:"white", backgroundColor:"black"}}>Hii</
 Note: `class` is a reserved keyword in JS, so use `className` instead of `class` in JSX.
 Note: `for` is a reserved keyword in JS, so use `htmlFor` instead of `for` in JSX.
 Note: <></> is a React Fragment, it is used to wrap multiple elements without adding an extra node to the DOM.
+
+## useState Hook in React
+
+```js
+function App() {
+    let count = 0;
+
+    function incr() {
+        count++;
+    }
+
+    return {
+        <>
+            <p>Counter: {count}</p>
+            <button onClick={incr}>Increment</button>
+        </>
+    }
+}
+
+const e = <App />
+ReactDOM.createRoot(document.getElementById('root')).render(e);
+```
+But doing these only increments the variable count but it doesn't update on the screen.
+You'll have to manually update on the UI in thr `incr()` using dom manipulation and it's a
+hassle if the variable is being used multiple times.
+
+```js
+function incr() {
+    count++;
+    let pa = document.querySelector('p');
+    pa.textContent = Counter: {count};
+}
+```
+
+But React makes this easier using inbuilt powerful functions called Hooks.
+
+```js
+import {useState} from "react";
+
+export default function App() {
+    let [count, setCount] = useState(0);
+
+    function incr() {
+        setCount(count++);
+    }
+
+    return {
+        <>
+            <p>Counter: {count}</p>
+            <button onClick={incr}>Increment</button>
+        </>
+    }
+}
+```
+
+It basically rerenders the function in this case `App()` with updated value.
