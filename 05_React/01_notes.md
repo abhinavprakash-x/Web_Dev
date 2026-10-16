@@ -127,16 +127,181 @@ export default function App() {
     let [count, setCount] = useState(0);
 
     function incr() {
-        setCount(count++);
+        setCount(count + 1);
     }
 
-    return {
+    return (
         <>
             <p>Counter: {count}</p>
             <button onClick={incr}>Increment</button>
         </>
-    }
+    );
 }
 ```
 
 It basically rerenders the function in this case `App()` with updated value.
+
+## useEffect Hook in React
+```js
+export default function App() {
+    const [users, setUsers] = useState([]);
+
+    async function git_profile() {
+        const response = await fetch("https://api.github.com/users");
+        const data = await response.json();
+        setUsers(data);
+    }
+
+    git_profile();
+
+    return (
+        <>
+            <h1>Github Users</h1>
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center", gap: "10px", flexWrap: "wrap"}}>
+                {
+                    users.map(user=>(
+                        <img src={user.avatar_url} height={"100px"} width={"100px"}/>
+                    ));
+                }
+            </div>
+        </>
+    );
+}
+```
+But this will keep calling the API again and again. Since everytime the useState hook updates it will
+call the App() function and that means it will call the git_profile() function too, so the users will
+be updated again, and this forms an infinite loop.
+
+To fix this issue useEffect hook is used instead.
+```js
+export default function App() {
+    const [users, setUsers] = useState([]);
+
+    useEffect(()=>{
+        async function git_profile() {
+            const response = await fetch("https://api.github.com/users");
+            const data = await response.json();
+            setUsers(data);
+        }
+        git_profile();
+    }, []); // [] = dependency array
+
+    return (
+        <>
+            <h1>Github Users</h1>
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center", gap: "10px", flexWrap: "wrap"}}>
+                {
+                    users.map(user=>(
+                        <img src={user.avatar_url} height={"100px"} width={"100px"} key={user.login}/>
+                    ))
+                }
+            </div>
+        </>
+    );
+}
+```
+The callback function inside useEffect is executed last and it is also known as the Side-Effect Hook.
+If we provide the dependency array to be empty `[]` then it will only run once on rendering
+and avoid the infinite loop on every re-render. If we don't add the empty array then it will
+call everytime App() re-renders.
+
+If you pass a variable to the dependency array then the useEffect hook will be called everytime
+the value of that variable changes.
+eg.
+```js
+export default function App() {
+    const [users, setUsers] = useState([]);
+    const [count, setCount] = useState(30);
+
+    useEffect(()=>{
+        async function git_profile() {
+            const response = await fetch(`https://api.github.com/users?per_page=${count}`);
+            const data = await response.json();
+            setUsers(data);
+        }
+        git_profile();
+    }, [count]); // [count] = dependency array
+
+    return (
+        <>
+            <h1>Github Users</h1>
+            <input type="number" value={count} onChange={(e)=>setCount(e.target.value)}></input>
+            <div style={{display: "flex", justifyContent: "center", alignItems: "center", gap: "10px", flexWrap: "wrap"}}>
+                {
+                    users.map(user=>(
+                        <img src={user.avatar_url} height={"100px"} width={"100px"} key={user.login}/>
+                    ))
+                }
+            </div>
+        </>
+    );
+}
+```
+`onChange` Event => whenever the value changes.
+
+onEffect hook is generally used for API calls, DOM Manipulation, and Subscriptions.
+onEffect hook is called after the render is committed to the screen. It is also called after every re-render.
+onEffect hook is also used with web API's like `setTimeout`, `setInterval`, and `requestAnimationFrame` to perform side effects.
+
+```js
+export default function Clock() {
+    const [time, setTime] = useState(new Date().toLocaleTimeString());
+
+    setInterval(()=>{
+        setTime(new Date().toLocaleTimeString());
+    }, 1000);
+
+    return (
+        <>
+            <h1>Counter: {count}</h1>
+        </>
+    );
+}
+```
+But this will create a new interval on every re-render and it will keep creating new intervals and the old intervals will keep running in the background. So to avoid this we can use the useEffect hook to create the interval only once on the initial render.
+
+```js
+export default function Clock() {
+    const [time, setTime] = useState(new Date().toLocaleTimeString());
+
+    useEffect(()=>{
+        setInterval(()=>{
+            setTime(new Date().toLocaleTimeString());
+        }, 1000);
+    }, []);
+
+    return (
+        <>
+            <h1>Time: {time}</h1>
+        </>
+    );
+}
+```
+This can furthher be improved by clearing the interval when the component is unmounted. This can be done by returning a cleanup function from the useEffect hook.
+
+```js
+export default function Clock() {
+    const [time, setTime] = useState(new Date().toLocaleTimeString());
+    const [show, setShow] = useState(true);
+
+    useEffect(()=>{
+        if(!show) return;
+
+        const interval = setInterval(()=>{
+            setTime(new Date().toLocaleTimeString());
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [show]);
+
+    return (
+        <>
+            <button onClick={()=>setShow(!show)}>{show ? "Stop" : "Start"}</button>
+            {
+                show && <h1>Time: {time}</h1>
+            }
+        </>
+    );
+}
+```
+This works because the cleanup function is called before the next effect is executed. So when the `show` state changes to false, the cleanup function is called and the interval is cleared.
