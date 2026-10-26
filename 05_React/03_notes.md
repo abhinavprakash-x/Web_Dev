@@ -102,3 +102,66 @@ NOTE: But these memo (React.memo) fails when an object is passed to them through
 Since Eveytime object is passed the object will have a different reference.
 So it will re execute.
 This can be solved by using useMemo to store the object and then pass that object.
+
+## useRef Hook
+useRef is used to store a value that doesn't cause re render when changed. It can be used
+to store a DOM element reference or a variable that doesn't need to be re rendered.
+
+```jsx
+function App() {
+	const [time, setTime] = useState(0);
+	let intervalIdref = useRef(null);
+
+	function handleStart() {
+        if (intervalIdref.current) {
+            return;
+        }
+
+		intervalIdref.current = setInterval(() => {
+			setTime((time) => time + 1);
+		}, 1000);
+	}
+
+	function handleStop() {
+		clearInterval(intervalIdref.current);
+        intervalIdref.current = null;
+	}
+
+	function handleReset() {
+		clearInterval(intervalIdref.current);
+        intervalIdref.current = null;
+		setTime(0);
+	}
+
+	return (
+		<div>
+			<h1>Time: {time}</h1>
+			<button onClick={handleStart}>Start</button>
+			<button onClick={handleStop}>Stop</button>
+			<button onClick={handleReset}>Reset</button>
+		</div>
+	);
+}
+```
+The intervalIdref is an object with a property called current. The value of current can be changed without causing a re render. So it can be used to store the intervalId and then clear it when needed. This is useful when we want to start and stop a timer without causing unnecessary re renders of the component.
+It is initialized only once and the value of current can be changed without causing a re render.
+
+Also used in forms to prevent re render when the input value is changed. It can be used to store the input value and then use it when needed without causing a re render.
+
+```jsx
+function App() {
+    const inputRef = useRef(null);
+
+    function handleSubmit(event) {
+        event.preventDefault();
+        alert(`Input value: ${inputRef.current.value}`);
+    }
+
+    return (
+        <form onSubmit={handleSubmit}>
+            <input type="text" ref={inputRef} />
+            <button type="submit">Submit</button>
+        </form>
+    );
+}
+```
