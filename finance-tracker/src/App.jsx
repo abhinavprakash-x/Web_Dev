@@ -3,7 +3,8 @@ import { createContext, useState } from "react";
 import Cards from "./Cards.jsx";
 import History from "./History.jsx";
 import Nav from "./Nav.jsx";
-import Form from "./Form.jsx";
+import IncomeForm from "./IncomeForm.jsx"
+import ExpenseForm from "./ExpenseForm.jsx"
 
 import "./App.css";
 
@@ -11,38 +12,54 @@ export const IncomeContext = createContext(null);
 export const BalanceContext = createContext(null);
 export const ExpenseContext = createContext(null);
 
-function addTransaction(data) {
-    if (data.type === "income") {
-        setIncome(prev => prev + data.amount);
-        setBalance(prev => prev + data.amount);
-    }
-    else {
-        setExpense(prev => prev + data.amount);
-        setBalance(prev => prev - data.amount);
-    }
-}
-
 function App() {
     const [Income, setIncome] = useState(0);
-    const [Balance, setBalance] = useState(0);
     const [Expense, setExpense] = useState(0);
 
-    const [activeForm , setActiveForm] = useState(null);
+    const Balance = Income - Expense;
+    
+    const [activeIncomeForm , setIncomeForm] = useState(false);
+    const [activeExpenseForm , setExpenseForm] = useState(false);
+
+    function addIncome(data) {
+        setIncome(prev => prev + data.amount);
+        Balance = Income - Expense;
+    }
+
+    function addExpense(data) {
+        setExpense(prev => prev + data.amount);
+        Balance = Income - Expense;
+    }
 
     return (
         <>
             <IncomeContext value = {{Income, setIncome}}>
-            <BalanceContext value = {{Balance, setBalance}}>
+            <BalanceContext value = {{Balance}}>
             <ExpenseContext value = {{Expense, setExpense}}>
 
                 <div className="App">
-                    <Nav onOpenForm={setActiveForm} />
+                    <Nav setIncomeForm={setIncomeForm} setExpenseForm={setExpenseForm} />
                     <Cards />
                     <History />
                 </div>
 
-                {activeForm &&
-                    <Form type={activeForm} onCloseForm={()=>setActiveForm(null)} onAddTransaction={addTransaction} />}
+                {activeIncomeForm && (
+                    <div className="Modal">
+                        <IncomeForm
+                            addIncome={addIncome}
+                            closeForm={() => setIncomeForm(false)}
+                        />
+                    </div>
+                )}
+
+                {activeExpenseForm && (
+                    <div className="Modal">
+                        <ExpenseForm
+                            addExpense={addExpense}
+                            closeForm={() => setExpenseForm(false)}
+                        />
+                    </div>
+                )}
 
             </ExpenseContext>
             </BalanceContext>

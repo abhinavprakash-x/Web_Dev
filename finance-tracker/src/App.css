@@ -1,37 +1,58 @@
 * {
-    margin: 0px;
-    padding: 0px;
+    margin: 0;
+    padding: 0;
     box-sizing: border-box;
+}
 
-    background-color: black;
-    color: white;
+body {
+    background-color: #000;
+    color: #fff;
+    font-family: Arial, sans-serif;
+}
+
+button, input, select {
+    font: inherit;
+}
+
+button {
+    cursor: pointer;
 }
 
 .App {
-    height: 100vh;
+    min-height: 100vh;
     gap: 1rem;
+    padding: 1rem;
+
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 2fr 7fr;
-}
-
-.btn {
-    background-color: #1e1e1e;
-    color: white;
-    border: 1px solid white;
-    padding: 0.5rem 1rem;
-    margin: 0.5rem;
-    cursor: pointer;
+    grid-template-rows: 80px 180px 1fr;
 }
 
 .Nav {
     display: flex;
     justify-content: flex-end;
     align-items: center;
+
+    gap: 0.75rem;
+}
+
+.btn {
+    background-color: #1e1e1e;
+    color: white;
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 0.7rem 1.2rem;
+    transition: background-color 0.2s;
+}
+
+.btn:hover {
+    background-color: #333;
 }
 
 .Cards {
     width: 100%;
+    gap: 1rem;
+
     display: flex;
     justify-content: space-around;
     align-items: center;
@@ -39,66 +60,239 @@
 
 .CardItem {
     width: 30%;
-    height: 80%;
+    min-height: 120px;
+    padding: 1rem;
 
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
+    gap: 0.75rem;
 
-    border-radius: 10px;
-    border: 1px solid white;
+    background-color: #111;
+    border: 1px solid #333;
+    border-radius: 12px;
 }
 
 .History {
     width: 100%;
-    height: 100%;
     gap: 15px;
 
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
+    align-items: center;
 }
 
 .HistoryItem {
     width: 95%;
-    height: 10%;
+    min-height: 65px;
+    padding: 1rem;
 
     display: flex;
     justify-content: center;
     align-items: center;
 
+    background-color: #111;
+    border: 1px solid #333;
     border-radius: 10px;
-    border: 1px solid white;
 }
 
-.Form {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+.IncomeForm, .ExpenseForm {
+    width: min(90%, 420px);
+    margin: 2rem auto;
+    padding: 1.5rem;
 
-    width: 400px;
+    background-color: #111;
+    border: 1px solid #444;
+    border-radius: 12px;
+}
+
+.IncomeForm h2, .ExpenseForm h2 {
+    margin-bottom: 1.5rem;
+}
+
+.IncomeForm form, .ExpenseForm form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.IncomeForm label, .ExpenseForm label {
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.IncomeForm input, .ExpenseForm input,
+.IncomeForm select, .ExpenseForm select {
+    width: 100%;
+    padding: 0.75rem;
+
+    background-color: #1e1e1e;
+    color: white;
+
+    border: 1px solid #444;
+    border-radius: 7px;
+    outline: none;
+}
+
+.IncomeForm input:focus, .ExpenseForm input:focus,
+.IncomeForm select:focus, .ExpenseForm select:focus {
+    border-color: #888;
+}
+
+.IncomeForm p, .ExpenseForm p {
+    color: #ff5555;
+    font-size: 0.8rem;
+}
+
+.IncomeForm button, .ExpenseForm button {
+    padding: 0.75rem;
+    border: 1px solid #444;
+    border-radius: 7px;
+
+    background-color: #222;
+    color: white;
+}
+
+.IncomeForm button:hover, .ExpenseForm button:hover {
+    background-color: #333;
+}
+
+@media (max-width: 600px) {
+    .App {
+        grid-template-rows: auto auto 1fr;
+    }
+
+    .Nav {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .Cards {
+        flex-direction: column;
+    }
+
+    .CardItem {
+        width: 100%;
+        min-height: 100px;
+    }
+}
+
+.Modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 1rem;
+
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+}
+
+.IncomeForm,
+.ExpenseForm {
+    width: 100%;
+    max-width: 420px;
+
     padding: 2rem;
 
-    background: #222;
-    color: white;
-    border: 1px solid white;
-    border-radius: 12px;
+    background-color: #151515;
+    border: 1px solid #383838;
+    border-radius: 14px;
 
-    z-index: 1000;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.6);
+
+    animation: popup 0.2s ease-out;
 }
 
-.Form input,
-.Form select {
-    display: block;
+.IncomeForm h2,
+.ExpenseForm h2 {
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
+}
+
+@keyframes popup {
+    from {
+        opacity: 0;
+        transform: translateY(15px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* =========================
+   Form Controls
+========================= */
+
+.IncomeForm form,
+.ExpenseForm form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+}
+
+.IncomeForm label,
+.ExpenseForm label {
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+.IncomeForm input,
+.ExpenseForm input,
+.IncomeForm select,
+.ExpenseForm select {
     width: 100%;
-    padding: 10px;
-    margin: 8px 0 16px;
-    background: #333;
+    padding: 0.8rem;
+
+    background-color: #222;
     color: white;
+
+    border: 1px solid #444;
+    border-radius: 7px;
+    outline: none;
 }
 
-.Form p {
-    color: #ff6b6b;
+.IncomeForm input:focus,
+.ExpenseForm input:focus,
+.IncomeForm select:focus,
+.ExpenseForm select:focus {
+    border-color: #888;
+}
+
+.IncomeForm p,
+.ExpenseForm p {
+    color: #ff5555;
+    font-size: 0.8rem;
+}
+
+.IncomeForm button,
+.ExpenseForm button {
+    padding: 0.8rem;
+
+    background-color: #252525;
+    color: white;
+
+    border: 1px solid #444;
+    border-radius: 7px;
+
+    transition: background-color 0.2s;
+}
+
+.IncomeForm button:hover,
+.ExpenseForm button:hover {
+    background-color: #383838;
+}
+
+@media (max-width: 480px) {
+    .IncomeForm,
+    .ExpenseForm {
+        padding: 1.3rem;
+    }
 }
