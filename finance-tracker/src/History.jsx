@@ -1,7 +1,10 @@
 function History() {
     return (
-        <div>
-            <h2>History</h2>
+        <div className="History">
+            <div className="HistoryItem"><h2>History</h2></div>
+            <div className="HistoryItem"><h2>History</h2></div>
+            <div className="HistoryItem"><h2>History</h2></div>
+            <div className="HistoryItem"><h2>History</h2></div>
         </div>
     );
 }

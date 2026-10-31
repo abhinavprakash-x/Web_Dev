@@ -1,6 +1,6 @@
 * {
-    margin: 0;
-    padding: 0;
+    margin: 0px;
+    padding: 0px;
     box-sizing: border-box;
 
     background-color: black;
@@ -12,7 +12,7 @@
     gap: 1rem;
     display: grid;
     grid-template-columns: 1fr;
-    grid-template-rows: 1fr 3fr 6fr;
+    grid-template-rows: 1fr 2fr 7fr;
 }
 
 .btn {
@@ -22,4 +22,83 @@
     padding: 0.5rem 1rem;
     margin: 0.5rem;
     cursor: pointer;
+}
+
+.Nav {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.Cards {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.CardItem {
+    width: 30%;
+    height: 80%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 10px;
+    border: 1px solid white;
+}
+
+.History {
+    width: 100%;
+    height: 100%;
+    gap: 15px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.HistoryItem {
+    width: 95%;
+    height: 10%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 10px;
+    border: 1px solid white;
+}
+
+.Form {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    width: 400px;
+    padding: 2rem;
+
+    background: #222;
+    color: white;
+    border: 1px solid white;
+    border-radius: 12px;
+
+    z-index: 1000;
+}
+
+.Form input,
+.Form select {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin: 8px 0 16px;
+    background: #333;
+    color: white;
+}
+
+.Form p {
+    color: #ff6b6b;
 }

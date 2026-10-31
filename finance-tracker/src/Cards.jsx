@@ -7,10 +7,10 @@ function Cards() {
     const { Expense } = useContext(ExpenseContext);
 
     return (
-        <div>
-            <div><h2>Income: {Income}</h2></div>
-            <div><h2>Balance: {Balance}</h2></div>
-            <div><h2>Expense: {Expense}</h2></div>
+        <div className="Cards">
+            <div className="CardItem"><h2>Income: {Income}</h2></div>
+            <div className="CardItem"><h2>Balance: {Balance}</h2></div>
+            <div className="CardItem"><h2>Expense: {Expense}</h2></div>
         </div>
     );
 }

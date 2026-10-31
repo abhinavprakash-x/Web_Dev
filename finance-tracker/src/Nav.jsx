@@ -1,10 +1,10 @@
 import "./App.css";
 
-function Nav() {
+function Nav({ onOpenForm }) {
     return (
-        <div>
-            <button className="btn">Add Money</button>
-            <button className="btn">Add Expense</button>
+        <div className="Nav">
+            <button className="btn" onClick={() => onOpenForm('income')}>Add Money</button>
+            <button className="btn" onClick={() => onOpenForm('expense')}>Add Expense</button>
         </div>
     )
 }
