@@ -17,18 +17,37 @@ function App() {
     const [Expense, setExpense] = useState(0);
 
     const Balance = Income - Expense;
+    const [TransactionHistory, setTransactionHistory] = useState([]);
     
     const [activeIncomeForm , setIncomeForm] = useState(false);
     const [activeExpenseForm , setExpenseForm] = useState(false);
 
     function addIncome(data) {
         setIncome(prev => prev + data.amount);
-        Balance = Income - Expense;
+        setTransactionHistory(prev => [
+            {
+                id: crypto.randomUUID(),
+                type: "income",
+                description: data.category,
+                amount: data.amount,
+                category: data.category,
+                date: new Date()
+            }, ...prev
+        ]);
     }
 
     function addExpense(data) {
         setExpense(prev => prev + data.amount);
-        Balance = Income - Expense;
+        setTransactionHistory(prev => [
+            {
+                id: crypto.randomUUID(),
+                type: "expense",
+                description: data.description,
+                amount: data.amount,
+                category: data.category,
+                date: new Date()
+            }, ...prev
+        ]);
     }
 
     return (
@@ -40,7 +59,7 @@ function App() {
                 <div className="App">
                     <Nav setIncomeForm={setIncomeForm} setExpenseForm={setExpenseForm} />
                     <Cards />
-                    <History />
+                    <History transactions={TransactionHistory} />
                 </div>
 
                 {activeIncomeForm && (
