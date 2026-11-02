@@ -1,107 +1,171 @@
 # Spring Framework
 
+## Client–Server Architecture
+
 ```mermaid
 flowchart TD
-A[Client] --> B[Server]
-B --> A
+    A[Client] --> B[Server]
+    B --> A
 ```
 
-## Client Server Architecture
-Client Makes a `Request` (HTTP/HTTPS) to the Server
-and the Server gives a `Response`.
+A **client** sends a `Request` (HTTP/HTTPS) to a **server**, and the server returns a `Response`.
 
-Client
-- Mobile App
-- Broswer
-- React Frontend
+### Examples of clients
+
+- Mobile app
+- Browser
+- React frontend
 - Postman
-- Server (if it calls another server)
+- Another server, when it calls this server
 
-Server Authenticates, Processes and Responds to the Request.
+The server authenticates the request, processes it, and sends a response.
 
-### HTTP -> Hyper Text Transfer Protocol
-Rulebook defining the structure of response/request and the methods (GET/POST/DELETE/PATCH/PUT)
-and how data will be sent.
+### HTTP — Hypertext Transfer Protocol
 
-### HTTPS -> Hyper Text Transfer Protocol Secure
-Encrypts the Response/Request.
+HTTP is the rulebook that defines the structure of requests and responses, the methods used (GET, POST, DELETE, PATCH, PUT), and how data is sent.
 
-Request Structure:
-- Method Name (GET/POST)
-- API Endpoint/Path/URL
-- Headers
-- Body
+### HTTPS — Hypertext Transfer Protocol Secure
 
-Examples:
-```bash
+HTTPS encrypts HTTP request and response traffic in transit.
+
+### HTTP request structure
+
+- **Method:** for example, `GET` or `POST`
+- **API endpoint/path/URL**
+- **Headers**
+- **Body** (when needed)
+
+#### Examples
+
+```http
 GET /courses
-HOST: www.example.com
+Host: www.example.com
+```
 
+```http
 POST /login
-HOST: www.example.com
+Host: www.example.com
 Content-Type: application/json
+
 {
-    email: "example@gmail.com",
-    password: "pass"
+    "email": "example@gmail.com",
+    "password": "pass"
 }
 ```
 
-Response Structure:
-- Status Code (200 OK, 201, 503 Internal Server Error, 404 Resource Not Found)
-- Headers
-- Body
+### HTTP response structure
 
-Example:
-```bash
+- **Status code:** for example, `200 OK`, `201 Created`, `404 Not Found`, or `503 Service Unavailable`
+- **Headers**
+- **Body**
+
+#### Example
+
+```http
 200 OK
 Content-Type: application/json
+
 {
-    message: "success"
+    "message": "success"
 }
 ```
 
 ## Why Spring?
-You can do Everything directly with `java.net` packages's socket but
-then you'll have to manually parse requests, and create responses,
-manually allocate endpoints to methods and handle multi threading/concurrency.
-NOTE: Not necessarily Java, Any language with networking support can work.
 
-Then came Servlet and Servlet Containers that make this easier.
+You can do everything directly with sockets from Java's `java.net` packages. However, you would then have to:
+
+- Manually parse requests.
+- Create responses.
+- Map endpoints to methods.
+- Handle multithreading and concurrency.
+
+**Note:** This is not specific to Java. Any language with networking support can do this.
+
+### Servlets and servlet containers
+
+Servlets and servlet containers make this work easier. Examples of servlet containers include:
+
 - Apache Tomcat
 - Jetty
 - Undertow
 
 ```mermaid
 flowchart TD
-A[Client] --> B[Tomcat]
-B --> C[Servlet]
-C --> B
-B --> A
+    A[Client] --> B[Tomcat]
+    B --> C[Servlet]
+    C --> B
+    B --> A
 ```
 
-Client Sends Request to Tomcat Server which handles parsing, concurrency etc.
-and Sends a HTTP Servlet Request to a Java Servlet (Code) which replies with
-HTTP Servlet Response to Tomcat which then replies back to the Client.
+The client sends a request to the Tomcat server. Tomcat handles request parsing, concurrency, and other server responsibilities. It then sends an HTTP Servlet Request to a Java Servlet (your code). The servlet returns an HTTP Servlet Response to Tomcat, which sends the HTTP response back to the client.
 
-Then Came Spring Framework, since on Enterprise level Applications things became
-tightly coupled and hard to maintain so Spring introduces it's rules to de-couple
-the code and make it easier to maintain.
+### Spring Framework
+
+As enterprise-level applications grew, code often became tightly coupled and difficult to maintain. Spring Framework introduced conventions and tools that help decouple code and make applications easier to maintain.
 
 ## Spring Architecture
+
 ```mermaid
 flowchart TD
-A[Spring Core] --> B[Spring MVC]
-A --> C[Spring Data]
-A --> D[Spring AOP]
-A --> E[Spring Security]
-A --> F[Spring AI]
-B --> G(Spring Boot)
-C --> G
-D --> G
-E --> G
-F --> G
+    A[Spring Core] --> B[Spring MVC]
+    A --> C[Spring Data]
+    A --> D[Spring AOP]
+    A --> E[Spring Security]
+    A --> F[Spring AI]
+    B --> G(Spring Boot)
+    C --> G
+    D --> G
+    E --> G
+    F --> G
 ```
 
-Spring Data:
-- JDBC (Write SQL Queries)
-- JPA (Internally depends on Hibernate which depends on JDBC)
+### Spring Data
+
+- **JDBC:** Write SQL queries.
+- **JPA:** Uses Hibernate internally; Hibernate, in turn, uses JDBC.
+
+## Default Ports
+
+- **HTTP:** `80`
+- **HTTPS:** `443`
+
+Applications can use other ports as well. For example, a Spring Boot application commonly runs on port `8080` during development.
+
+How does a client reach an application that listens on a different port?
+
+```mermaid
+flowchart TD
+    A[Client] --> B["Reverse Proxy (Nginx/Apache)"]
+    B --> C["Application Server (Tomcat/Jetty/Undertow)"]
+    C --> B
+    B --> A
+```
+
+The client sends a request to the reverse proxy, which listens on port `80` or `443`. The reverse proxy forwards the request to the application server, which listens on port `8080`. The application server processes the request and sends the response back to the reverse proxy, which then returns it to the client.
+
+## Setting Up a Maven Project
+
+Go to [`start.spring.io`](https://start.spring.io/) or use the Spring Initializr extension in VS Code. Use these settings:
+
+- **Project:** Maven (rather than Gradle)
+- **Language:** Java
+- **Spring Boot version:** `4.0.0` or higher
+- **Group:** `com.example`
+- **Artifact:** `demo`
+- **Package name:** `com.example.demo`
+- **Packaging:** Jar
+- **Java:** 21 LTS
+
+For a Java web application, the setup automatically:
+
+- Creates the folder structure.
+- Creates the configuration files.
+- Downloads the dependencies.
+- Configures the Java version.
+- Configures the Spring Boot version.
+- Sets up the package structure.
+
+## Mapping URLs to Methods with `@GetMapping`
+
+- `@GetMapping("/")` maps the `/` path to the annotated method. For example, `http://localhost:8080/` displays that method's result.
+- `@GetMapping("hello")` maps the `/hello` path to the annotated method. For example, `http://localhost:8080/hello` displays that method's result.
