@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 
 import Cards from "./Cards.jsx";
 import History from "./History.jsx";
@@ -13,11 +13,32 @@ export const BalanceContext = createContext(null);
 export const ExpenseContext = createContext(null);
 
 function App() {
-    const [Income, setIncome] = useState(0);
-    const [Expense, setExpense] = useState(0);
+    const [Income, setIncome] = useState(() => {
+        const savedData = JSON.parse(localStorage.getItem("expenseTracker"));
+        return savedData?.income ?? 0;
+    });
+
+    const [Expense, setExpense] = useState(() => {
+        const savedData = JSON.parse(localStorage.getItem("expenseTracker"));
+        return savedData?.expense ?? 0;
+    });
 
     const Balance = Income - Expense;
-    const [TransactionHistory, setTransactionHistory] = useState([]);
+
+    const [TransactionHistory, setTransactionHistory] = useState(() => {
+        const savedData = JSON.parse(localStorage.getItem("expenseTracker"));
+        return savedData?.transactions ?? [];
+    });
+
+    useEffect(() => {
+        const data = {
+            income: Income,
+            expense: Expense,
+            transactions: TransactionHistory
+        };
+
+        localStorage.setItem("expenseTracker", JSON.stringify(data));
+    }, [Income, Expense, TransactionHistory]);
     
     const [activeIncomeForm , setIncomeForm] = useState(false);
     const [activeExpenseForm , setExpenseForm] = useState(false);

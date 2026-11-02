@@ -76,25 +76,99 @@ button {
 
 .History {
     width: 100%;
-    gap: 15px;
+    max-width: 900px;
+    margin: 0 auto;
 
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
+    gap: 12px;
+}
+
+.History h2 {
+    margin-bottom: 0.5rem;
+    font-size: 1.4rem;
+}
+
+.History > p {
+    color: #888;
+    text-align: center;
+    padding: 2rem;
 }
 
 .HistoryItem {
-    width: 95%;
-    min-height: 65px;
-    padding: 1rem;
+    width: 100%;
+    min-height: 85px;
+    padding: 1rem 1.25rem;
 
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+    gap: 1rem;
 
     background-color: #111;
     border: 1px solid #333;
     border-radius: 10px;
+
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+.HistoryItem:hover {
+    background-color: #171717;
+    border-color: #555;
+}
+
+.HistoryDetails {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.HistoryDetails h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.HistoryDetails p {
+    color: #aaa;
+    font-size: 0.85rem;
+}
+
+.HistoryDetails small {
+    color: #777;
+    font-size: 0.75rem;
+}
+
+.IncomeAmount,
+.ExpenseAmount {
+    font-weight: 600;
+    white-space: nowrap;
+    font-size: 1rem;
+}
+
+.IncomeAmount {
+    color: #4ade80;
+}
+
+.ExpenseAmount {
+    color: #f87171;
+}
+
+@media (max-width: 480px) {
+    .HistoryItem {
+        padding: 0.85rem;
+    }
+
+    .HistoryDetails h3 {
+        font-size: 0.9rem;
+    }
+
+    .IncomeAmount,
+    .ExpenseAmount {
+        font-size: 0.9rem;
+    }
 }
 
 .IncomeForm, .ExpenseForm {
