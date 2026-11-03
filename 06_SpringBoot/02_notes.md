@@ -75,3 +75,100 @@ Maven Lifecycle
 - site (documentation and stuff)
 
 If you perform any step all steps above it automatically execute in order.
+
+
+# Spring Core
+
+## Dependency Injection
+Tight Coupling: Code modules depend on each other heavily.
+Which is generally a bad practice. So a Separate method can be created to
+handle the dependent portion to reduce coupling.
+This is called Dependency Injection.
+
+- S Single Responsibility
+- O Open/Close
+- L
+- I
+- D
+`Chatgpt complete this portion of SOLID Principles.`
+
+Eg. of Tight Coupled System
+```java
+class SmsNotifoication {
+    public void call() {
+        System.out.println("SMS Notification");
+    }
+}
+
+class Order {
+    SmsNotification notification = new SmsNotification(); // Tight Coupling
+    public void place() {
+        System.out.println("Order Placed\n");
+        notification.call();
+    }
+}
+
+class main() {
+    public static void main(String args[]) {
+        Order o = new Order();
+        o.place();
+    }
+}
+```
+
+Eg. of Loosely Coupled System
+```java
+interface Notification {
+    public void call();
+}
+
+class SmsNotifoication implements Notification {
+    @Overrides
+    public void call() {
+        System.out.println("SMS Notification");
+    }
+}
+
+class EmailNotification implements Notification {
+    @Overrides
+    public void call() {
+        System.out.println("Email Notification");
+    }
+}
+
+class Order {
+    Notification notification; // Loose coupling
+
+    public void choose(Notification x) {
+        this.notification = x;
+    }
+
+    public void place() {
+        System.out.println("Order Placed\n");
+        notification.call();
+    }
+}
+
+class main() {
+    public static void main(String args[]) {
+        Order o = new Order();
+        Notification n = new EmailNotification();
+        o.choose(n); // Dependency Injection
+        o.place();
+    }
+}
+```
+
+But even this will eventually lead to main class getting too complicated
+so Spring Core makes it simple and easy to manage.
+
+## Inversion Of Control (IOC)
+IOC is idea/principle
+Dependency Control is an approach to do IOC
+
+Spring Core has IOC Containers which:
+- creates and manages objects
+- connects objects together
+
+Java Class -> Objects
+Spring IOC Container -> Beans
