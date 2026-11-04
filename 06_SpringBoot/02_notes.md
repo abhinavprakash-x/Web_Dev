@@ -197,3 +197,56 @@ Why Constructor Injection is preferred?
 - dependency gets wired at time of object creation
 - dependency can be made a `final` variable
 - easy to unit test
+
+How Spring handles it behind the scenes:
+1. Start to Container
+2. Reads AppConfig
+3. Processes ComponentScan and finds all @Component Classes
+4. Creates Bean Definitions (Bean name, class, scope, dependency etc.)
+5. Spring creates Objects and wires them
+6. Our Application uses these beans now.
+
+When there are multiple Beans in IOC Container that can be injected then what?
+@Primary -> Takes the highest priority
+@Qualifier -> Apply in multiple classes and then in the constructor where it is being injected
+use camel case name of the qualifying class who you want to inject.
+
+```java
+@Qualifier
+public class UpiPayment() {...}
+
+public class OrderService() {
+    ...
+    public OrderService(@Qualifier("upiPayment") PaymentService s) {
+        this.service = s;
+    }
+    ...
+}
+```
+
+NOTE: You can change name of Bean too by doing this -> `@Qualifier("bean_name")`
+
+When we can't use @Component?
+- when class constructor is complex and wants multiple primitive values
+- when you are importing something from a jar/dependency then you can't apply 
+
+Fix:
+Create Objects yourself in AppConfig/@Configuration class and spring will handle it
+use @Bean to create beans of objects made by you in here.
+
+```java
+@Configuration 
+@ComponentScan("com.example.demo2")
+public class AppConfig {
+    @Bean
+    public PaymentService create() {
+        return new UpiService();
+    }
+}
+```
+The two problems can also be handled like this.
+If multiple beans are present again use @Primary/Qualifier and the names will be the method names
+in this case for @Qualifier.
+
+If you keep both @Component and create object using @Bean 2 objects won't be created.
+@Bean will be given priority and only 1 will be created.

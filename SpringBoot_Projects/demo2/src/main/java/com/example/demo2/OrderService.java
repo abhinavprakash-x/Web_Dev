@@ -1,9 +1,11 @@
 package com.example.demo2;
 
 // import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+// import org.springframework.stereotype.Component;
 
-@Component
+import com.example.demo2.payment.PaymentService;
+
+// @Component
 public class OrderService {
     // Field Injection, not recommended
     // @Autowired 
