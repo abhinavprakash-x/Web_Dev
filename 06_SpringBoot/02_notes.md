@@ -172,3 +172,28 @@ Spring Core has IOC Containers which:
 
 Java Class -> Objects
 Spring IOC Container -> Beans
+
+## How to do this with Spring?
+See `demo2` project.
+1. Add Spring Context as a Dependency.
+2. @Component -> Tells Springboot to manage the class.
+3. Create a `AnnotationConfigApplicationContext()`
+4. @Configuration -> Makes a Configuration class whose reflection (AppConfig.class) will be passed to Annotation....
+5. @ComponentScan("package") -> Scans for all Components and makes Beans for them.
+6. @Autowired -> Automatically wires one class/interface so other class can use it.
+
+`Class` is a special Class in java that stores metadata of other Classes.
+```java
+Class<Student> c1 = Student.class;
+```
+
+Types of Dependency Injection
+- Constructor injection
+- Setter method injection
+- Field injection
+
+Why Constructor Injection is preferred?
+- No need to write @Autowired if only one constructor exists
+- dependency gets wired at time of object creation
+- dependency can be made a `final` variable
+- easy to unit test
