@@ -1,252 +1,748 @@
-# Maven
+# Java Backend Notes: Maven and Spring Core
 
-## What are JAR Files
-Normal Execution:
-Java Code -> Compile -> Bytecode .class Files -> JVM -> Output
-For Multiple files, multiple .class files exist.
-And in big projects, sharing individual files can be a headache
-so why don't we zip all of the class files? Yes. That is a JAR.
+> Organized study notes based on the original material. The examples and
+> explanations have been cleaned up, and a few technical inaccuracies
+> have been clarified. The `demo` and `demo2` projects were not
+> included, so project-specific behavior is described only where the
+> notes provide enough information.
 
-JAR: Java Archives
-It can contain class files, resources/assets and folders/packages.
-You can also import/export libraries as jar files (like .dll and .so files in C/C++)
-There are two types of JAR
-- Non Executable (Doesn't package other dependencies but only links them using pom.xml)
-- Executable JAR (Packages all dependencies too)
+------------------------------------------------------------------------
 
-## Maven
-It helps in automatically managing the project and these dependecies/jar files.
-It is a project management tool and mainly does these 4 things
-- maintain folder structure
-- helps in compiling
-- creates jar files
-- download and manage dependencies (transitive dependencies too A->B->C)
+# 1. Maven
 
-## Folder Structure
-```text
-Demo
-|
-|--- pom.xml (project object model)
-|
-|--- src (code)
-|    |
-|    |--- main (app source code)
-|    |    |
-|    |    |--- java (java code)
-|    |    |    |
-|    |    |    |--- com/example/demo
-|    |    |    |                |
-|    |    |    |                |--- Main.java
-|    |    |
-|    |    |--- resources (assets/ properties/ etc.)
-|    |
-|    |--- test (unit tests)
-|
-|--- target (class files)
+## 1.1 What is a JAR file?
+
+A Java program is compiled into bytecode (`.class` files), which is
+executed by the Java Virtual Machine (JVM).
+
+``` text
+Java source files (.java)
+        |
+        | javac
+        v
+Bytecode files (.class)
+        |
+        | JVM
+        v
+      Output
 ```
 
-`mvnrepository.com` Used to find libraries.
-Usually we use domain name as our project structure
-eg. `com.abhinav/project-name/main.java`
+A project containing multiple classes may produce many `.class` files.
+Sharing and distributing these files individually is inconvenient.
 
-pom.xml:
-Contains xml tags
-Important -> groupid artifactid version
-pom -> parent pom -> super pom
-effective pom: maven uses this pom for project
+A **JAR (Java ARchive)** packages related files into one archive.
 
-Maven uses 2 repositories
-- Central Repositry
-- Local --> C://Users/Name/.m2/repositories
-- Other remote (private company repo)
+A JAR can contain:
 
-Our own project jar files are also stored there in local
+-   Compiled Java classes (`.class`)
+-   Resources such as configuration files and images
+-   Package/folder structures
+-   Metadata, including a manifest
 
-Maven Lifecycle
-- clean (delete target folder)
-- default
-- - validate (check syntax etc)
-- - compile (class files)
-- - test (unit tests)
-- - package (jar file)
-- - verify (integration testing, quality testing, configure pom.xml plugins)
-- - install (install jar in local .m2 repository)
-- - deploy (remote repository upload)
-- site (documentation and stuff)
+JAR files are also used to distribute Java libraries, much like `.dll`
+files in Windows or `.so` files in Linux.
 
-If you perform any step all steps above it automatically execute in order.
+### Types of JARs
 
+-   **Library JAR:** Contains the classes and resources of a
+    library. Dependencies it needs are generally declared separately and
+    must be available on the application's classpath.
+-   **Executable JAR:** Can be launched using `java -jar`. A Spring Boot
+    executable JAR commonly packages the application and its
+    dependencies.
 
-# Spring Core
+> A regular JAR does not automatically bundle its dependencies. The
+> exact packaging behavior depends on the build configuration and
+> plugins being used.
 
-## Dependency Injection
-Tight Coupling: Code modules depend on each other heavily.
-Which is generally a bad practice. So a Separate method can be created to
-handle the dependent portion to reduce coupling.
-This is called Dependency Injection.
+## 1.2 What is Maven?
 
-- S Single Responsibility
-- O Open/Close
-- L
-- I
-- D
-`Chatgpt complete this portion of SOLID Principles.`
+**Maven** is a build automation and project management tool for Java
+projects.
 
-Eg. of Tight Coupled System
-```java
-class SmsNotifoication {
+It helps with:
+
+1.  Maintaining a standard project structure.
+2.  Compiling source code.
+3.  Running tests.
+4.  Packaging the application (for example, into a JAR).
+5.  Downloading and managing dependencies, including transitive
+    dependencies.
+
+### Dependency management
+
+Suppose your project depends on library `A`, and `A` depends on `B`.
+
+``` text
+Your project
+    |
+    v
+    A
+    |
+    v
+    B
+```
+
+Maven can resolve and download transitive dependencies such as `B`,
+rather than requiring you to manage every dependency manually.
+
+Useful website for discovering Java libraries: [Maven
+Repository](https://mvnrepository.com/).
+
+## 1.3 Standard Maven project structure
+
+``` text
+demo/
+├── pom.xml
+├── src/
+│   ├── main/
+│   │   ├── java/
+│   │   │   └── com/
+│   │   │       └── example/
+│   │   │           └── demo/
+│   │   │               └── Main.java
+│   │   └── resources/
+│   │       └── application.properties
+│   └── test/
+│       └── java/
+└── target/
+```
+
+  -----------------------------------------------------------------------
+  Path                                Purpose
+  ----------------------------------- -----------------------------------
+  `pom.xml`                           Maven project configuration
+
+  `src/main/java`                     Application source code
+
+  `src/main/resources`                Application resources and
+                                      configuration
+
+  `src/test/java`                     Test source code
+
+  `target/`                           Generated build output, including
+                                      compiled classes and packaged
+                                      artifacts
+  -----------------------------------------------------------------------
+
+The `target/` directory is generated by Maven and can be recreated by
+building the project.
+
+### Package naming
+
+Java packages commonly use a reversed-domain naming convention to help
+avoid naming conflicts.
+
+For example:
+
+``` text
+com.abhinav.projectname
+```
+
+A Java class in that package would begin with:
+
+``` java
+package com.abhinav.projectname;
+```
+
+## 1.4 Understanding `pom.xml`
+
+`pom.xml` stands for **Project Object Model**. It describes the project
+and its build configuration.
+
+Three important coordinates identify a Maven artifact:
+
+-   `groupId`: Usually identifies the organization or group.
+-   `artifactId`: Identifies the project or artifact.
+-   `version`: Identifies the artifact version.
+
+Example:
+
+``` xml
+<groupId>com.example</groupId>
+<artifactId>demo</artifactId>
+<version>1.0.0</version>
+```
+
+### Parent POM and Super POM
+
+-   A **parent POM** is a POM inherited from another project POM. It can
+    provide shared configuration, dependency management, and plugin
+    configuration.
+-   The **Super POM** is Maven's built-in base POM. Every Maven POM
+    inherits from it, directly or indirectly.
+-   The **effective POM** is the resulting configuration after Maven
+    combines the project's POM with inherited and other applicable
+    configuration.
+
+## 1.5 Maven repositories
+
+Maven resolves artifacts from repositories.
+
+The main repository types are:
+
+1.  **Local repository:** A cache on your machine. On Windows, its
+    default location is usually:
+
+    ``` text
+    C:\Users\<username>\.m2\repository
+    ```
+
+2.  **Central repository:** Maven Central, a commonly used public
+    repository for Java libraries.
+
+3.  **Other remote repositories:** For example, private repositories
+    maintained by an organization.
+
+Maven downloads dependencies into the local repository. It can also
+install artifacts that you build locally into that repository so other
+local projects can use them.
+
+## 1.6 Maven build lifecycles
+
+Maven has three built-in lifecycles:
+
+-   `clean`
+-   `default`
+-   `site`
+
+The **default lifecycle** contains the main build phases:
+
+  -----------------------------------------------------------------------
+  Phase                               Purpose
+  ----------------------------------- -----------------------------------
+  `validate`                          Checks that the project is
+                                      correctly configured and ready to
+                                      build
+
+  `compile`                           Compiles the main source code
+
+  `test`                              Runs unit tests
+
+  `package`                           Packages compiled code, for example
+                                      into a JAR
+
+  `verify`                            Runs checks to verify the package
+                                      meets configured quality criteria
+
+  `install`                           Installs the package into the local
+                                      Maven repository
+
+  `deploy`                            Publishes the package to a remote
+                                      repository
+  -----------------------------------------------------------------------
+
+The `clean` lifecycle includes the `clean` phase, which normally removes
+generated build output such as `target/`.
+
+The `site` lifecycle generates project documentation and reports.
+
+### Important lifecycle rule
+
+When you request a phase, Maven executes the preceding phases in that
+lifecycle first.
+
+For example:
+
+``` bash
+mvn package
+```
+
+runs the default lifecycle phases up to `package`, including `validate`,
+`compile`, and `test`.
+
+Similarly:
+
+``` bash
+mvn install
+```
+
+runs the default lifecycle up to `install`.
+
+`clean` is a separate lifecycle, so `mvn package` does not automatically
+run `clean`. To clean and then package, use:
+
+``` bash
+mvn clean package
+```
+
+------------------------------------------------------------------------
+
+# 2. Spring Core
+
+## 2.1 Tight coupling and loose coupling
+
+**Tight coupling** occurs when one class directly creates or depends on
+a specific implementation of another class. This makes changing
+implementations and testing components harder.
+
+For example, `Order` directly creates an `SmsNotification`:
+
+``` java
+class SmsNotification {
     public void call() {
         System.out.println("SMS Notification");
     }
 }
 
 class Order {
-    SmsNotification notification = new SmsNotification(); // Tight Coupling
-    public void place() {
-        System.out.println("Order Placed\n");
-        notification.call();
-    }
-}
+    private final SmsNotification notification =
+            new SmsNotification();
 
-class main() {
-    public static void main(String args[]) {
-        Order o = new Order();
-        o.place();
+    public void place() {
+        System.out.println("Order Placed");
+        notification.call();
     }
 }
 ```
 
-Eg. of Loosely Coupled System
-```java
+Here, `Order` is tightly coupled to `SmsNotification`. Replacing SMS
+notifications with email notifications requires changing the `Order`
+class.
+
+### Reducing coupling with an interface
+
+Instead, make `Order` depend on an abstraction:
+
+``` java
 interface Notification {
-    public void call();
+    void call();
 }
 
-class SmsNotifoication implements Notification {
-    @Overrides
+class SmsNotification implements Notification {
+    @Override
     public void call() {
         System.out.println("SMS Notification");
     }
 }
 
 class EmailNotification implements Notification {
-    @Overrides
+    @Override
     public void call() {
         System.out.println("Email Notification");
     }
 }
 
 class Order {
-    Notification notification; // Loose coupling
+    private final Notification notification;
 
-    public void choose(Notification x) {
-        this.notification = x;
+    public Order(Notification notification) {
+        this.notification = notification;
     }
 
     public void place() {
-        System.out.println("Order Placed\n");
+        System.out.println("Order Placed");
         notification.call();
     }
 }
 
-class main() {
-    public static void main(String args[]) {
-        Order o = new Order();
-        Notification n = new EmailNotification();
-        o.choose(n); // Dependency Injection
-        o.place();
+public class Main {
+    public static void main(String[] args) {
+        Notification notification = new EmailNotification();
+        Order order = new Order(notification);
+        order.place();
     }
 }
 ```
 
-But even this will eventually lead to main class getting too complicated
-so Spring Core makes it simple and easy to manage.
+Now `Order` depends on the `Notification` interface rather than a
+specific notification implementation.
 
-## Inversion Of Control (IOC)
-IOC is idea/principle
-Dependency Control is an approach to do IOC
+This makes the code more flexible and easier to test.
 
-Spring Core has IOC Containers which:
-- creates and manages objects
-- connects objects together
+## 2.2 Dependency Injection (DI)
 
-Java Class -> Objects
-Spring IOC Container -> Beans
+A **dependency** is an object or service that another class needs to
+perform its work.
 
-## How to do this with Spring?
-See `demo2` project.
-1. Add Spring Context as a Dependency.
-2. @Component -> Tells Springboot to manage the class.
-3. Create a `AnnotationConfigApplicationContext()`
-4. @Configuration -> Makes a Configuration class whose reflection (AppConfig.class) will be passed to Annotation....
-5. @ComponentScan("package") -> Scans for all Components and makes Beans for them.
-6. @Autowired -> Automatically wires one class/interface so other class can use it.
+**Dependency Injection** is a technique in which an object's
+dependencies are supplied from outside rather than being created by that
+object itself.
 
-`Class` is a special Class in java that stores metadata of other Classes.
-```java
-Class<Student> c1 = Student.class;
+In the previous example:
+
+``` java
+Notification notification = new EmailNotification();
+Order order = new Order(notification);
 ```
 
-Types of Dependency Injection
-- Constructor injection
-- Setter method injection
-- Field injection
+The `Notification` dependency is passed into `Order` through its
+constructor. This is **constructor injection**.
 
-Why Constructor Injection is preferred?
-- No need to write @Autowired if only one constructor exists
-- dependency gets wired at time of object creation
-- dependency can be made a `final` variable
-- easy to unit test
+The `choose()` method in the original notes also demonstrates the
+general idea of supplying a dependency from outside, but constructor
+injection is often preferable when the dependency is required.
 
-How Spring handles it behind the scenes:
-1. Start to Container
-2. Reads AppConfig
-3. Processes ComponentScan and finds all @Component Classes
-4. Creates Bean Definitions (Bean name, class, scope, dependency etc.)
-5. Spring creates Objects and wires them
-6. Our Application uses these beans now.
+> Loose coupling and Dependency Injection are related, but they are not
+> the same thing. Using interfaces helps decouple code; DI is a way of
+> supplying the required implementations.
 
-When there are multiple Beans in IOC Container that can be injected then what?
-@Primary -> Takes the highest priority
-@Qualifier -> Apply in multiple classes and then in the constructor where it is being injected
-use camel case name of the qualifying class who you want to inject.
+## 2.3 SOLID principles
 
-```java
-@Qualifier
-public class UpiPayment() {...}
+SOLID is a set of five object-oriented design principles.
 
-public class OrderService() {
-    ...
-    public OrderService(@Qualifier("upiPayment") PaymentService s) {
-        this.service = s;
-    }
-    ...
+  -----------------------------------------------------------------------
+  Letter                  Principle               Meaning
+  ----------------------- ----------------------- -----------------------
+  S                       Single Responsibility   A class should have one
+                          Principle               responsibility or one
+                                                  primary reason to
+                                                  change.
+
+  O                       Open/Closed Principle   Software entities
+                                                  should be open for
+                                                  extension but closed
+                                                  for modification.
+
+  L                       Liskov Substitution     Objects of a subtype
+                          Principle               should be usable
+                                                  wherever objects of the
+                                                  parent type are
+                                                  expected, without
+                                                  breaking correctness.
+
+  I                       Interface Segregation   Prefer small, focused
+                          Principle               interfaces over large
+                                                  interfaces that force
+                                                  classes to implement
+                                                  methods they do not
+                                                  need.
+
+  D                       Dependency Inversion    High-level modules
+                          Principle               should depend on
+                                                  abstractions, not
+                                                  directly on low-level
+                                                  implementations.
+  -----------------------------------------------------------------------
+
+The notification example illustrates the idea behind the Dependency
+Inversion Principle: `Order` depends on the `Notification` abstraction
+instead of directly depending on `SmsNotification`.
+
+## 2.4 Inversion of Control (IoC)
+
+**Inversion of Control (IoC)** is a design principle in which control
+over some part of an application's object creation or behavior is
+transferred from application code to a framework or container.
+
+Without a container, application code may create and connect its own
+objects:
+
+``` java
+Notification notification = new EmailNotification();
+Order order = new Order(notification);
+```
+
+With Spring, the Spring IoC container can create the objects and supply
+their dependencies.
+
+### Spring IoC container
+
+The Spring IoC container:
+
+-   Creates and manages objects.
+-   Maintains the objects it manages.
+-   Connects objects according to their dependencies.
+
+Objects managed by the Spring container are called **beans**.
+
+``` text
+Java class
+    |
+    | instantiated and managed by Spring
+    v
+Spring bean
+```
+
+A class is a definition; a bean is an object instance managed by the
+Spring container.
+
+## 2.5 Creating beans with Spring
+
+The following notes refer to the `demo2` project. Its source code was
+not included, so this section describes the concepts and annotations
+recorded in the notes rather than claiming to reproduce that project's
+exact implementation.
+
+### Step 1: Add Spring Context
+
+Add the Spring Context dependency to `pom.xml`. It provides the core
+Spring container functionality.
+
+### Step 2: Mark classes with `@Component`
+
+`@Component` tells Spring that a class is a candidate for component
+scanning and can be registered as a bean.
+
+``` java
+@Component
+public class Student {
+    // ...
 }
 ```
 
-NOTE: You can change name of Bean too by doing this -> `@Qualifier("bean_name")`
+### Step 3: Create an application context
 
-When we can't use @Component?
-- when class constructor is complex and wants multiple primitive values
-- when you are importing something from a jar/dependency then you can't apply 
+For annotation-based configuration, Spring provides
+`AnnotationConfigApplicationContext`.
 
-Fix:
-Create Objects yourself in AppConfig/@Configuration class and spring will handle it
-use @Bean to create beans of objects made by you in here.
+It creates an application context using Java-based configuration and can
+manage the beans registered in that context.
 
-```java
-@Configuration 
+### Step 4: Configure component scanning
+
+`@Configuration` marks a class as a source of bean definitions.
+
+`@ComponentScan` tells Spring which package(s) to scan for component
+classes.
+
+``` java
+@Configuration
 @ComponentScan("com.example.demo2")
 public class AppConfig {
-    @Bean
-    public PaymentService create() {
-        return new UpiService();
+}
+```
+
+When the context starts, Spring processes the configuration and
+discovers eligible components in the scanned package.
+
+### Step 5: Inject dependencies with `@Autowired`
+
+`@Autowired` tells Spring to resolve and inject a dependency.
+
+For example, Spring can inject a `Notification` bean into a class that
+requires it.
+
+> If a class has only one constructor, Spring can use that constructor
+> for injection without requiring `@Autowired` on it.
+
+## 2.6 The Java `Class` object
+
+Java's `Class` class represents information about a class or interface
+at runtime. It is part of Java reflection.
+
+For example:
+
+``` java
+Class<Student> studentClass = Student.class;
+```
+
+Here, `Student.class` provides the `Class` object representing the
+`Student` type. It is not a `Student` instance.
+
+## 2.7 Types of Dependency Injection
+
+Spring supports three commonly discussed forms of dependency injection:
+
+1.  **Constructor injection:** Dependencies are provided through a
+    constructor.
+2.  **Setter injection:** Dependencies are provided through setter
+    methods.
+3.  **Field injection:** Dependencies are injected directly into fields.
+
+### Why constructor injection is generally preferred
+
+-   Required dependencies are supplied when the object is created.
+-   Required fields can be declared `final`.
+-   The object cannot be constructed without its required dependencies.
+-   It is straightforward to unit test by passing dependencies directly.
+-   It makes the class's dependencies explicit.
+
+Example:
+
+``` java
+@Component
+public class OrderService {
+    private final PaymentService paymentService;
+
+    public OrderService(PaymentService paymentService) {
+        this.paymentService = paymentService;
     }
 }
 ```
-The two problems can also be handled like this.
-If multiple beans are present again use @Primary/Qualifier and the names will be the method names
-in this case for @Qualifier.
 
-If you keep both @Component and create object using @Bean 2 objects won't be created.
-@Bean will be given priority and only 1 will be created.
+## 2.8 What happens inside Spring when the context starts?
+
+A simplified view of the process:
+
+1.  The Spring application context starts.
+2.  Spring reads the configuration class, such as `AppConfig`.
+3.  It processes `@ComponentScan` and discovers eligible component
+    classes.
+4.  It registers bean definitions containing metadata about the beans.
+5.  It creates bean instances when required by the container's
+    lifecycle.
+6.  It resolves and injects their dependencies.
+7.  The application can retrieve and use the managed beans.
+
+The container manages the object creation and dependency wiring that
+application code would otherwise have to perform manually.
+
+## 2.9 What if multiple beans match a dependency?
+
+Suppose the application has two implementations:
+
+``` java
+@Component
+class UpiPayment implements PaymentService {
+    // ...
+}
+
+@Component
+class CardPayment implements PaymentService {
+    // ...
+}
+```
+
+If a class requests a `PaymentService`, Spring finds more than one
+candidate. It needs a way to determine which bean should be injected.
+
+Two common solutions are `@Primary` and `@Qualifier`.
+
+### `@Primary`
+
+Marks one bean as the preferred candidate when multiple beans of the
+same type are available.
+
+``` java
+@Component
+@Primary
+class UpiPayment implements PaymentService {
+    // ...
+}
+```
+
+### `@Qualifier`
+
+Selects a specific bean by its bean name or qualifier.
+
+``` java
+@Component("upiPayment")
+class UpiPayment implements PaymentService {
+    // ...
+}
+
+@Component("cardPayment")
+class CardPayment implements PaymentService {
+    // ...
+}
+
+@Service
+class OrderService {
+    private final PaymentService paymentService;
+
+    public OrderService(
+            @Qualifier("upiPayment") PaymentService paymentService) {
+        this.paymentService = paymentService;
+    }
+}
+```
+
+By default, Spring's component-scanned bean name is generally the class
+name with its first letter lowercased. An explicit name can be supplied
+to `@Component`, as shown above.
+
+## 2.10 When should you use `@Bean` instead of `@Component`?
+
+`@Component` is useful when you can annotate the class itself and let
+Spring discover it through component scanning.
+
+However, there are situations where you cannot or do not want to
+annotate the class:
+
+-   The class belongs to a third-party library, so you cannot modify its
+    source.
+-   You want to control how an object is constructed.
+-   The object requires constructor arguments or setup that should be
+    configured explicitly.
+
+In these cases, define the bean in a configuration class using `@Bean`.
+
+``` java
+@Configuration
+@ComponentScan("com.example.demo2")
+public class AppConfig {
+
+    @Bean
+    public PaymentService paymentService() {
+        return new UpiPayment();
+    }
+}
+```
+
+The method's return value is registered as a Spring bean. By default,
+the bean name is the method name: `paymentService`.
+
+You can also specify an explicit bean name:
+
+``` java
+@Bean("upiPayment")
+public PaymentService paymentService() {
+    return new UpiPayment();
+}
+```
+
+### `@Component` vs `@Bean`
+
+  -----------------------------------------------------------------------
+  `@Component`                        `@Bean`
+  ----------------------------------- -----------------------------------
+  Applied to a class                  Applied to a method
+
+  Discovered through component        Declared in a configuration class
+  scanning                            
+
+  Useful for classes you control      Useful for third-party classes or
+                                      custom construction
+
+  Spring creates and manages the bean Spring manages the object returned
+                                      by the method
+  -----------------------------------------------------------------------
+
+### Avoid registering the same implementation twice
+
+If the same implementation is registered both through component scanning
+and through an `@Bean` method, you can end up with two separate beans.
+
+Do not rely on one definition automatically taking priority over the
+other. If you intend to have one bean, register it through one mechanism
+or explicitly configure the bean definitions and qualifiers.
+
+------------------------------------------------------------------------
+
+# 3. Quick Revision
+
+## Maven
+
+-   **JAR:** An archive that packages Java classes and resources.
+-   **Maven:** A build and dependency-management tool.
+-   **`pom.xml`:** Project configuration file.
+-   **`groupId`, `artifactId`, `version`:** Maven artifact coordinates.
+-   **Local repository:** Usually `~/.m2/repository`.
+-   **`mvn clean package`:** Removes generated output, then builds and
+    packages the project.
+-   **`mvn install`:** Builds and installs the artifact into the local
+    repository.
+
+## Spring Core
+
+-   **Tight coupling:** A class depends directly on a specific
+    implementation.
+-   **Loose coupling:** Components depend on abstractions, making
+    implementations easier to replace.
+-   **Dependency Injection:** Dependencies are supplied from outside a
+    class.
+-   **IoC:** Control over object creation and wiring is delegated to a
+    container or framework.
+-   **Bean:** An object managed by the Spring IoC container.
+-   **`@Component`:** Marks a class as a component candidate.
+-   **`@Configuration`:** Declares a configuration class.
+-   **`@ComponentScan`:** Configures component scanning.
+-   **`@Autowired`:** Requests dependency injection.
+-   **`@Primary`:** Marks a preferred bean candidate.
+-   **`@Qualifier`:** Selects a particular bean.
+-   **`@Bean`:** Declares a bean through a configuration method.
+-   **Constructor injection:** Usually the preferred way to inject
+    required dependencies.
+
+------------------------------------------------------------------------
