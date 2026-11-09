@@ -313,3 +313,64 @@ public class B {
     }
 }
 ```
+
+Configurational Metadata
+1. Annotation Based Configuration
+2. XML Based Configuration
+
+## XML Based Configuration:
+In resources folder create a file named beans.xml and add the following content to it:k
+```xml
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <bean id="orderService" class="com.example.OrderService">
+        <constructor-arg ref="paymentService"/>
+    </bean>
+
+    <bean id="paymentService" class="com.example.PaymentService"/>
+</beans>
+```
+
+```java
+public class main {
+    public static void main(String args[]) {
+        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+        // Get bean by name/id
+        // OrderService obj = context.getBean("orderService");
+        // obj.placeOrder();
+
+        // Get bean by class, won't work if there are multiple beans of same class
+        // OrderService obj = context.getBean(OrderService.class);
+        // obj.placeOrder();
+
+        // Get bean by name and class
+        OrderService obj = context.getBean("orderService", OrderService.class);
+        obj.placeOrder();
+    }
+}
+```
+
+scopes can also be defined in XML configuration using the scope attribute in the <bean> tag.
+```xml
+<bean id="orderService" class="com.example.OrderService" scope="singleton">
+    <constructor-arg ref="paymentService"/>
+</bean>
+<bean id="paymentService" class="com.example.PaymentService" scope="prototype"/>
+```
+
+You can pass values to beans using <property> tag in XML configuration.
+```xml
+<bean id="orderService" class="com.example.OrderService">
+    <constructor-arg ref="paymentService"/>
+    <property name="orderId" value="12345"/>
+</bean>
+```
+
+For more complex configurations, you can use <list>, <set>, <map>, and <props> tags to define collections and properties for your beans.
+And for PreDestroy and PostConstruct methods, you can use init-method and destroy-method attributes in the <bean> tag.
+```xml
+<bean id="cartService" class="com.example.CartService" init-method="init" destroy-method="destroy"/>
+```
