@@ -3,7 +3,7 @@
 - Java 21 (Eclipse Temurin Adoptium)
 - Spring Boot Extension Pack (VS Code)
 - Maven wrapper (mvnw)
-- curl.exe
+- Postman or curl for testing API endpoints
 - PostgreSQL 18 (Host Port: 5432)
 
 ## Spring Boot Dependencies
@@ -105,3 +105,38 @@ Jackson library is used to convert json request to Java object and vice versa.
 can be injected into other components. (creates bean)
 ResponseEntity -> Class that represents an HTTP response, including the status code, headers, and body.
 It allows you to customize the response sent back to the client. (does not create bean)
+
+### Spring JPA --> Jakarta Persistence API
+No Need to write SQL queries for CRUD operations. Spring JPA provides built-in methods for common database operations,
+such as saving, retrieving, updating, and deleting entities.
+It also supports custom queries using JPQL (Java Persistence Query Language) or native SQL queries.
+
+- create --> save()
+- read --> findById(), findAll()
+- update --> save()
+- delete --> deleteById()
+- search --> existsById()
+
+The `StudentRepository` interface extends the `JpaRepository` interface, which provides these built-in methods
+for CRUD operations on the `Student` entity. We also pass the `Student` entity class and the type of its primary key (Long)
+as generic parameters to the `JpaRepository` interface.
+
+```java
+public interface StudentRepository extends JpaRepository<Student, Long> {}
+```
+
+@Repository -> Annotation that marks a class as a repository component, indicating that it handles data access and
+can be injected into other components. (creates bean) (no need to add @Repository annotation in the repository
+interface as it is already a Spring Data JPA repository)
+
+JPA AUtomatically creates the table in the database based on the entity class. The table name is the same as the entity class name by default.
+Using spring.jpa.hibernate.ddl-auto=update property in application.properties file,
+we can update the table structure automatically when the entity class is modified.
+
+@GetMapping("/{id}") -> Annotation that maps HTTP GET requests to a specific method in a controller class,
+@PathVariable -> Annotation that indicates that a method parameter should be bound to a URI template variable.
+@PutMapping("/{id}") -> Annotation that maps HTTP PUT requests to a specific method in a controller class,
+@DeleteMapping("/{id}") -> Annotation that maps HTTP DELETE requests to a specific method in a controller class.
+
+.findById() method returns an Optional<Student> object, which may or may not contain a Student entity.
+Optional<T> -> Class that represents a container object which may or may not contain a non-null value.

@@ -1,17 +1,9 @@
 package com.example.crud.repository;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.example.crud.entity.Student;
 
-@Component 
-public class StudentRepository {
-
-    public ResponseEntity<Student> save(Student student) {
-        System.out.println("Student saved: " + student.getName());
-        System.out.println("Student email: " + student.getEmail());
-        return ResponseEntity.status(HttpStatus.CREATED).body(student);
-    }
+public interface StudentRepository extends JpaRepository<Student, Long> {
+    // JpaRepository provides CRUD operations for the Student entity automatically
 }
