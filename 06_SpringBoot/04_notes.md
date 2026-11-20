@@ -176,3 +176,21 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     int softDeleteById(@Param("id") Long id);
 }
 ```
+
+@RequestParam -> Annotation that indicates that a method parameter should be bound to a web request parameter.
+```java
+@Component
+public class StudentService {
+    @GetMapping("/api/student/get")
+    public Student getStudent(@RequestParam Long id) {
+        Optional<Student> student = studentRepository.findByIdAndDeletedFalse(id);
+
+        if(student.isPresent()) {
+            return student.get();
+        } else {
+            return null;
+        }
+    }
+}
+
+```
