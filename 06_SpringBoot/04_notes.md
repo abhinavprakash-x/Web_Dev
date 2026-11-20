@@ -140,3 +140,39 @@ we can update the table structure automatically when the entity class is modifie
 
 .findById() method returns an Optional<Student> object, which may or may not contain a Student entity.
 Optional<T> -> Class that represents a container object which may or may not contain a non-null value.
+
+## Soft Delete
+Soft delete is a technique where instead of permanently deleting a record from the database, we mark it as
+deleted by setting a flag or status column. This allows us to retain the record for historical
+or auditing purposes while excluding it from normal queries.
+
+@PatchMapping("/{id}") -> Annotation that maps HTTP PATCH requests to a specific method in a controller class.
+
+Spring JPA is really powerful and gives you the feature to not even write the SQL Queries or functions.
+it makes use of the method name to create the query for you.
+For example, if you want to find a student by id and deleted flag is false, you can simply write
+the method name as findByIdAndDeletedFalse(Long id) in the repository interface and Spring JPA will automatically create the query for you. 
+
+findBy + [PropertyName] + [Condition] + [Operator]
+
+```java
+public class StudentService {
+    public Student getStudent(Long id) {
+        Optional<Student> student = studentRepository.findByIdAndDeletedFalse(id);
+
+        if(student.isPresent()) {
+            return student.get();
+        } else {
+            return null; // or throw an exception, depending on your design choice
+        }
+    }
+}
+```
+
+```java
+public interface StudentRepository extends JpaRepository<Student, Long> {
+    @Modifying
+    @Query("UPDATE Student s SET s.deleted = true WHERE s.id = :id")
+    int softDeleteById(@Param("id") Long id);
+}
+```

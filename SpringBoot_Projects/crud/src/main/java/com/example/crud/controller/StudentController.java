@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -67,6 +68,16 @@ public class StudentController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> deleteStudent(@PathVariable Long id) {
         Boolean isDeleted = studentService.deleteStudent(id);
+        if(!isDeleted) {
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(isDeleted);
+    }
+
+    // soft delete student -> PATCH /api/students/{id}
+    @PatchMapping("/{id}")
+    public ResponseEntity<Boolean> softDeleteStudent(@PathVariable Long id) {
+        Boolean isDeleted = studentService.softDeleteStudent(id);
         if(!isDeleted) {
             return ResponseEntity.notFound().build();
         }
